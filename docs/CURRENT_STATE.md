@@ -6,37 +6,50 @@
 Sinking Fund Mobile Application
 
 ## Current phase
-`PHASE_0_BOOTSTRAP`
+`PHASE_1_DOMAIN_FOUNDATION`
 
-## Current task
-Awaiting final approval of the corrected Phase 0 Flutter Hybrid Architecture Plan.
+## Phase 0 status
+COMPLETE AND COMMITTED
 
-## Last completed work
-- Flutter architecture plan revised to apply 13 critical corrections (Hybrid structure, Money object, Pure Calculations, Dependency minimization).
-- `ARCHITECTURE.md`, `CALCULATION_SPEC.md`, and `DECISIONS.md` updated with final boundaries.
-- Final Phase 0 Implementation Plan generated.
-- Android build-tool architecture migrated from legacy KGP to AGP 9 Built-in Kotlin to resolve Java 25 / `JdkImageTransform` incompatibilities.
+Actual Phase 0 achievements:
+- Flutter project scaffold
+- hybrid feature-oriented architecture
+- Riverpod state/dependency wiring strategy
+- Drift persistence architecture
+- GoRouter routing architecture
+- pure Dart domain boundary
+- Money value-object requirement
+- AGP 9.0.1
+- built-in Kotlin enabled
+- android.newDsl=false compatibility configuration
+- Gradle 9.1.0
+- Java 25.0.2
+- Android SDK 36
+- NDK 28.2.13676358
+- Gradle cache moved to D:\DevCaches\Gradle
+- Pub cache moved to D:\DevCaches\Pub
+- flutter analyze passed
+- flutter test passed
+- debug APK build passed
+- Git Phase 0 checkpoint created
+
+## Current state
+The repository is now ready to begin Phase 1: Financial Domain Foundation.
 
 ## Active work
-- [x] Initialize repository structure
-- [ ] Configure project Rules
-- [ ] Configure reusable Workflows
-- [x] Establish architecture document
-- [x] Establish calculation specification
-- [ ] Establish design system document
-- [x] Initialize mobile framework (Flutter)
+None. Phase 0 tasks are complete.
 
 ## Blocked / unresolved
-Waiting for user review on the final corrected Phase 0 Flutter Architecture Plan.
+None. Waiting for explicit user approval to plan and implement Phase 1.
 
 ## Tests
-No implementation tests yet.
+`flutter test` and `flutter analyze` passed. Debug APK build passed.
 
 ## Important decisions
-See `docs/DECISIONS.md`. Flutter, Riverpod (wiring only), Drift, GoRouter, Custom `Money` object selected. Hybrid layer-feature architecture mandated.
+See `docs/DECISIONS.md`.
 
 ## Next action
-Wait for user review of the finalized Phase 0 Architecture Plan before initializing the codebase.
+Plan and implement Phase 1 only after explicit user approval.
 
 ## Last updated
-2026-08-12
+2026-08-14

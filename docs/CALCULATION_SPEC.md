@@ -11,18 +11,23 @@ All monetary values must be represented by an explicit `Money` domain model.
 - MUST be independent of Flutter, Riverpod, and Drift.
 
 remaining = targetAmount - currentBalance
-requiredContribution = remaining / remainingContributionPeriods
+requiredContribution = remaining / remainingPeriods (Half-Even rounded)
 
-The actual implementation must define contribution-period boundaries precisely and test them.
+expectedMinorUnits = roundHalfEven(targetMinorUnits * elapsedPeriods / totalPeriods)
+expectedBalance = Money(expectedMinorUnits, currency)
 
-## Fund States
-- NOT_STARTED
-- ON_TRACK
-- AHEAD
-- BEHIND
-- COMPLETE
-- OVERFUNDED
-- DEADLINE_PASSED
+The implementation precisely defines scheduled contribution dates `D` where `startDate <= D <= targetDate`.
+`elapsedPeriods` counts dates strictly `< currentDate`.
+
+## Fund Status Precedence
+Status is resolved in this strict order:
+1. `OVERFUNDED` (balance > target)
+2. `COMPLETE` (balance == target)
+3. `DEADLINE_PASSED` (currentDate > targetDate)
+4. `NOT_STARTED` (0 elapsed periods and 0 contributions)
+5. `AHEAD` (balance > expectedBalance)
+6. `ON_TRACK` (balance == expectedBalance)
+7. `BEHIND` (balance < expectedBalance)
 
 ## Required Calculations & Edge Cases
 The calculation engine must handle and identify:
@@ -30,7 +35,11 @@ The calculation engine must handle and identify:
 - Remaining amount and required contribution.
 - Progress and fund status.
 - Milestone detection.
-- target = 0
+- **Target = 0**: An open-ended savings pool. The product specification explicitly requires Target = 0 to be handled without division by zero, but does not explicitly state the UX/status semantics. As a domain implementation decision, the status is evaluated predictably based on existing precedence rules without introducing new edge-case states:
+  - target = 0, balance = 0 -> Status: `COMPLETE` (because balance == target)
+  - target = 0, balance > 0 -> Status: `OVERFUNDED` (because balance > target)
+  - target = 0, no contributions -> Status: `COMPLETE` (balance == target)
+  - target = 0, withdrawal -> permitted as normal.
 - current balance > target (overfunding)
 - current balance = target
 - deadline = today

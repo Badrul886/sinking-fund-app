@@ -18,3 +18,10 @@ None.
 
 ### Known issues
 None.
+## [Unreleased]
+### Added
+- Phase 1: Pure Dart financial domain foundation.
+- Money and Currency models with strict integer minor-unit arithmetic and half-even rounding.
+- CalendarDate and ContributionSchedule for recurring dates.
+- FundCalculator that correctly resolves Fund progress, remaining amount, required contribution, expected balance, and status precedence.
+- Comprehensive domain test suite.

@@ -6,7 +6,17 @@
 Sinking Fund Mobile Application
 
 ## Current phase
-`PHASE_1_DOMAIN_FOUNDATION`
+`PHASE_2_DATA_PERSISTENCE`
+
+## Phase 1 status
+COMPLETE AND COMMITTED
+
+Actual Phase 1 achievements:
+- Implemented pure Dart Currency and Money models
+- Implemented deterministic half-even rounding and direct ratio expected balance
+- Implemented Fund, CalendarDate, Transaction, and ContributionSchedule
+- Implemented robust FundCalculator with status precedence
+- 100% test pass rate for all domain components
 
 ## Phase 0 status
 COMPLETE AND COMMITTED

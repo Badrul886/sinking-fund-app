@@ -277,3 +277,54 @@ AGP 9's Built-in Kotlin safely bypasses the legacy `JdkImageTransform`/`jlink` t
 - `android/app/build.gradle.kts`
 
 ---
+## Decision: Financial Domain Representation (Phase 1 Refinement)
+**Date:** 2026-08-14
+**Status:** Accepted
+
+### Context
+We needed a detailed implementation of Money that supports multiple global currencies and strict integer arithmetic.
+
+### Options considered
+1. Integer minor units + Currency model
+2. Floating point arithmetic
+
+### Decision
+Strict Integer minor units + Currency model. Cross-currency operations are blocked and throw CurrencyMismatchException.
+Calculations for expected balances use direct ratio multiplication (	argetMinorUnits * elapsed / totalPeriods) followed by Half-Even rounding to prevent cumulative rounding error.
+
+### Consequences
+- Math operations are safe and deterministic.
+- UI will have to format these minor units appropriately.
+- Domain cannot do FX calculations.
+
+### Related files
+- lib/domain/currency.dart
+- lib/domain/money.dart
+- lib/domain/fund_calculator.dart
+
+---
+
+## Decision: Open-Ended Funds (Target = 0)
+**Date:** 2026-08-14
+**Status:** Accepted
+
+### Context
+The product specification requires the application to handle Target = 0 without dividing by zero ("Target = 0 — Do not divide by zero."). However, it does not explicitly state the UX or status semantics for a zero-target fund. We needed to formally define these semantics as an implementation/domain decision based on the existing status precedence rules (OVERFUNDED > COMPLETE).
+
+### Decision
+A fund with `targetAmount = 0` acts as an open-ended savings pool. The standard calculation engine evaluates its status predictably derived from precedence rules:
+- Balance = 0 -> `COMPLETE` (Current balance == target)
+- Balance > 0 -> `OVERFUNDED` (Current balance > target)
+- Withdrawals are evaluated purely against the existing balance.
+
+### Rationale
+This avoids defining special edge-case states in the domain logic while strictly honoring the product specification's constraint to not divide by zero. The existing precedence correctly interprets the math.
+
+### Consequences
+- Math operations natively bypass division by zero because the target check stops the flow.
+- A zero-target fund immediately hits COMPLETE or OVERFUNDED.
+
+### Related files
+- docs/CALCULATION_SPEC.md
+- lib/domain/fund_calculator.dart
+

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sinking_fund/presentation/screens/fund/fund_detail_screen.dart';
+import 'package:sinking_fund/presentation/widgets/inputs/transaction_bottom_sheet.dart';
 import 'package:sinking_fund/presentation/state/fund_detail_notifier.dart';
 import 'package:sinking_fund/application/models/fund_detail_state.dart';
 import 'package:sinking_fund/application/models/fund_state.dart';
@@ -346,6 +347,38 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Edit Fund'), findsOneWidget);
+    });
+
+    testWidgets('Add Contribution button opens TransactionBottomSheet', (
+      tester,
+    ) async {
+      final state = createTestState(
+        status: FundStatus.onTrack,
+        progress: 0.5,
+        transactions: [],
+      );
+      await tester.pumpWidget(createTestWidget(state: state));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Add Contribution'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TransactionBottomSheet), findsOneWidget);
+    });
+
+    testWidgets('Withdraw button opens TransactionBottomSheet', (tester) async {
+      final state = createTestState(
+        status: FundStatus.onTrack,
+        progress: 0.5,
+        transactions: [],
+      );
+      await tester.pumpWidget(createTestWidget(state: state));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Withdraw'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TransactionBottomSheet), findsOneWidget);
     });
   });
 }

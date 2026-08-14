@@ -24,6 +24,7 @@ class FundDetailNotifier extends AsyncNotifier<FundDetailState> {
   Future<void> addContribution({
     required Money amount,
     required CalendarDate date,
+    String? note,
   }) async {
     final useCase = ref.read(addContributionUseCaseProvider);
     final clock = ref.read(clockProvider);
@@ -32,6 +33,7 @@ class FundDetailNotifier extends AsyncNotifier<FundDetailState> {
       amount: amount,
       date: date,
       currentDate: clock.today(),
+      note: note,
     );
     // Invalidate self and list provider to refresh data
     ref.invalidateSelf();
@@ -42,6 +44,7 @@ class FundDetailNotifier extends AsyncNotifier<FundDetailState> {
   Future<void> addWithdrawal({
     required Money amount,
     required CalendarDate date,
+    String? note,
   }) async {
     final useCase = ref.read(addWithdrawalUseCaseProvider);
     final clock = ref.read(clockProvider);
@@ -50,6 +53,7 @@ class FundDetailNotifier extends AsyncNotifier<FundDetailState> {
       amount: amount,
       date: date,
       currentDate: clock.today(),
+      note: note,
     );
     // Invalidate self and list provider to refresh data
     ref.invalidateSelf();

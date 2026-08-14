@@ -12,6 +12,7 @@ import '../../widgets/data_display/progress_visualizer.dart';
 import '../../../domain/fund.dart';
 import '../../../application/errors/application_error.dart';
 import '../../../domain/money.dart';
+import '../../widgets/inputs/transaction_bottom_sheet.dart';
 
 class FundDetailScreen extends ConsumerWidget {
   final String fundId;
@@ -238,7 +239,22 @@ class FundDetailScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: state.isLoading || state.hasError ? null : () {},
+                  onPressed: state.isLoading || state.hasError
+                      ? null
+                      : () {
+                          final fundState = state.asData?.value.fundState;
+                          if (fundState != null) {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => TransactionBottomSheet(
+                                fundId: fundId,
+                                currency: fundState.fund.targetAmount.currency,
+                                type: TransactionType.contribution,
+                              ),
+                            );
+                          }
+                        },
                   icon: const Icon(Icons.add),
                   label: const Text('Add Contribution'),
                   style: FilledButton.styleFrom(
@@ -252,7 +268,22 @@ class FundDetailScreen extends ConsumerWidget {
               const SizedBox(width: 16),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: state.isLoading || state.hasError ? null : () {},
+                  onPressed: state.isLoading || state.hasError
+                      ? null
+                      : () {
+                          final fundState = state.asData?.value.fundState;
+                          if (fundState != null) {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => TransactionBottomSheet(
+                                fundId: fundId,
+                                currency: fundState.fund.targetAmount.currency,
+                                type: TransactionType.withdrawal,
+                              ),
+                            );
+                          }
+                        },
                   icon: const Icon(Icons.remove),
                   label: const Text('Withdraw'),
                   style: OutlinedButton.styleFrom(

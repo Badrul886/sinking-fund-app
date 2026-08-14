@@ -4,6 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sinking_fund/application/use_cases/onboarding/get_onboarding_status_use_case.dart';
 import 'package:sinking_fund/presentation/providers/dependencies.dart';
 import 'package:sinking_fund/presentation/routing/router.dart';
+import 'package:sinking_fund/application/models/fund_state.dart';
+import 'package:sinking_fund/presentation/state/funds_list_notifier.dart';
+import 'package:sinking_fund/presentation/state/dashboard_notifier.dart';
 
 class MockGetOnboardingStatusUseCase implements GetOnboardingStatusUseCase {
   bool isComplete;
@@ -13,14 +16,23 @@ class MockGetOnboardingStatusUseCase implements GetOnboardingStatusUseCase {
   Future<bool> execute() async => isComplete;
 }
 
+class MockFundsListNotifier extends FundsListNotifier {
+  @override
+  Future<List<FundState>> build() async => [];
+}
+
 void main() {
   group('Router Configuration', () {
-    testWidgets('Redirects to /onboarding when onboarding is incomplete', (tester) async {
+    testWidgets('Redirects to /onboarding when onboarding is incomplete', (
+      tester,
+    ) async {
       final mockUseCase = MockGetOnboardingStatusUseCase(false);
-      
+
       final container = ProviderContainer(
         overrides: [
           getOnboardingStatusUseCaseProvider.overrideWithValue(mockUseCase),
+          fundsListProvider.overrideWith(() => MockFundsListNotifier()),
+          recentActivityProvider.overrideWith((ref) => Future.value([])),
         ],
       );
 
@@ -29,9 +41,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp.router(
-            routerConfig: router,
-          ),
+          child: MaterialApp.router(routerConfig: router),
         ),
       );
 
@@ -44,10 +54,12 @@ void main() {
 
     testWidgets('Redirects to / when onboarding is complete', (tester) async {
       final mockUseCase = MockGetOnboardingStatusUseCase(true);
-      
+
       final container = ProviderContainer(
         overrides: [
           getOnboardingStatusUseCaseProvider.overrideWithValue(mockUseCase),
+          fundsListProvider.overrideWith(() => MockFundsListNotifier()),
+          recentActivityProvider.overrideWith((ref) => Future.value([])),
         ],
       );
 
@@ -56,9 +68,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp.router(
-            routerConfig: router,
-          ),
+          child: MaterialApp.router(routerConfig: router),
         ),
       );
 

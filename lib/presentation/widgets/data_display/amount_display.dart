@@ -23,24 +23,33 @@ class AmountDisplay extends StatelessWidget {
     final formatter = MoneyFormatter(locale: locale);
     final String formattedValue = formatter.format(amount);
 
-    final decimalSeparator = NumberFormat.decimalPattern(locale).symbols.DECIMAL_SEP;
+    final decimalSeparator = NumberFormat.decimalPattern(
+      locale,
+    ).symbols.DECIMAL_SEP;
     final exponent = amount.currency.metadata.minorUnitExponent;
 
-    final defaultStyle = style ?? AppTypography.financialLarge(theme.colorScheme.onSurface);
-    
+    final defaultStyle =
+        style ?? AppTypography.financialLarge(theme.colorScheme.onSurface);
+
     // Semantics should read the whole string coherently.
     return Semantics(
       label: formattedValue,
       child: ExcludeSemantics(
-        child: _buildRichText(formattedValue, decimalSeparator, exponent, defaultStyle, theme),
+        child: _buildRichText(
+          formattedValue,
+          decimalSeparator,
+          exponent,
+          defaultStyle,
+          theme,
+        ),
       ),
     );
   }
 
   Widget _buildRichText(
-    String formattedValue, 
-    String decimalSeparator, 
-    int exponent, 
+    String formattedValue,
+    String decimalSeparator,
+    int exponent,
     TextStyle baseStyle,
     ThemeData theme,
   ) {
@@ -49,31 +58,30 @@ class AmountDisplay extends StatelessWidget {
     }
 
     final int separatorIndex = formattedValue.indexOf(decimalSeparator);
-    
+
     // If for some reason the decimal separator isn't found (e.g. malformed locale), fallback to raw text.
     if (separatorIndex == -1) {
       return Text(formattedValue, style: baseStyle);
     }
 
     final String wholePart = formattedValue.substring(0, separatorIndex);
-    final String fractionPartAndSuffix = formattedValue.substring(separatorIndex);
+    final String fractionPartAndSuffix = formattedValue.substring(
+      separatorIndex,
+    );
 
     // Make the fraction part slightly smaller and muted, per typical financial app design.
     final fractionStyle = baseStyle.copyWith(
       fontSize: (baseStyle.fontSize ?? 14) * 0.75, // Scaled down
-      color: theme.extension<AppSemanticColors>()?.textMuted ?? theme.colorScheme.onSurface,
+      color:
+          theme.extension<AppSemanticColors>()?.textMuted ??
+          theme.colorScheme.onSurface,
     );
 
     return Text.rich(
       TextSpan(
         text: wholePart,
         style: baseStyle,
-        children: [
-          TextSpan(
-            text: fractionPartAndSuffix,
-            style: fractionStyle,
-          ),
-        ],
+        children: [TextSpan(text: fractionPartAndSuffix, style: fractionStyle)],
       ),
     );
   }

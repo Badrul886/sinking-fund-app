@@ -4,7 +4,7 @@ import '../../domain/currency_data.dart';
 
 class MoneyParser {
   /// Parses a string into a [Money] object using integer-safe arithmetic.
-  /// 
+  ///
   /// The [text] parameter should be normalized to use '.' as the decimal separator.
   /// Throws [FormatException] if the text is malformed or invalid.
   static Money parse(String text, Currency currency) {
@@ -37,11 +37,13 @@ class MoneyParser {
     if (metadata == null) {
       throw FormatException('Unknown currency code: ${currency.code}');
     }
-    
+
     final exponent = metadata.minorUnitExponent;
 
     if (fracStr.length > exponent) {
-      throw FormatException('Fractional digits exceed minor unit exponent of $exponent');
+      throw FormatException(
+        'Fractional digits exceed minor unit exponent of $exponent',
+      );
     }
 
     final digitRegex = RegExp(r'^\d*$');
@@ -50,7 +52,7 @@ class MoneyParser {
     }
 
     final wholePart = wholeStr.isEmpty ? 0 : int.parse(wholeStr);
-    
+
     final paddedFracStr = fracStr.padRight(exponent, '0');
     final fractionalPart = paddedFracStr.isEmpty ? 0 : int.parse(paddedFracStr);
 

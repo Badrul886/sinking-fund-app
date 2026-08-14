@@ -65,12 +65,18 @@ class OnboardingDraftNotifier extends Notifier<OnboardingDraftState> {
     return OnboardingDraftState();
   }
 
-  void updateName(String name) => state = state.copyWith(name: name, errorMessage: null);
-  void updateTargetAmountText(String text) => state = state.copyWith(targetAmountText: text, errorMessage: null);
-  void updateCurrency(Currency currency) => state = state.copyWith(currency: currency, errorMessage: null);
-  void updateTargetDate(CalendarDate date) => state = state.copyWith(targetDate: date, errorMessage: null);
-  void updateFrequency(ContributionFrequency frequency) => state = state.copyWith(frequency: frequency, errorMessage: null);
-  void updateInitialSavingsText(String text) => state = state.copyWith(initialSavingsText: text, errorMessage: null);
+  void updateName(String name) =>
+      state = state.copyWith(name: name, errorMessage: null);
+  void updateTargetAmountText(String text) =>
+      state = state.copyWith(targetAmountText: text, errorMessage: null);
+  void updateCurrency(Currency currency) =>
+      state = state.copyWith(currency: currency, errorMessage: null);
+  void updateTargetDate(CalendarDate date) =>
+      state = state.copyWith(targetDate: date, errorMessage: null);
+  void updateFrequency(ContributionFrequency frequency) =>
+      state = state.copyWith(frequency: frequency, errorMessage: null);
+  void updateInitialSavingsText(String text) =>
+      state = state.copyWith(initialSavingsText: text, errorMessage: null);
 
   void nextStep() async {
     if (state.currentStep == 1) {
@@ -82,23 +88,31 @@ class OnboardingDraftNotifier extends Notifier<OnboardingDraftState> {
         if (state.targetDate == null) {
           throw const FormatException('Target date is required');
         }
-        
-        final targetAmount = MoneyParser.parse(state.targetAmountText, state.currency);
+
+        final targetAmount = MoneyParser.parse(
+          state.targetAmountText,
+          state.currency,
+        );
         if (targetAmount.minorUnits <= 0) {
-          throw const FormatException('Target amount must be greater than zero');
+          throw const FormatException(
+            'Target amount must be greater than zero',
+          );
         }
-        
+
         Money initialSavings;
         if (state.initialSavingsText.trim().isEmpty) {
           initialSavings = Money(minorUnits: 0, currency: state.currency);
         } else {
-          initialSavings = MoneyParser.parse(state.initialSavingsText, state.currency);
+          initialSavings = MoneyParser.parse(
+            state.initialSavingsText,
+            state.currency,
+          );
         }
 
         final calculatePreview = ref.read(calculateFundPreviewUseCaseProvider);
         final clock = ref.read(clockProvider);
         final today = clock.today();
-        
+
         final preview = calculatePreview.execute(
           targetAmount: targetAmount,
           startDate: today,
@@ -116,25 +130,36 @@ class OnboardingDraftNotifier extends Notifier<OnboardingDraftState> {
     }
 
     if (state.currentStep < 3) {
-      state = state.copyWith(currentStep: state.currentStep + 1, errorMessage: null);
+      state = state.copyWith(
+        currentStep: state.currentStep + 1,
+        errorMessage: null,
+      );
     }
   }
 
   void previousStep() {
     if (state.currentStep > 0 && !state.isSubmitting) {
-      state = state.copyWith(currentStep: state.currentStep - 1, errorMessage: null);
+      state = state.copyWith(
+        currentStep: state.currentStep - 1,
+        errorMessage: null,
+      );
     }
   }
 
   Future<bool> submit() async {
     if (state.isSubmitting) return false;
-    
+
     state = state.copyWith(isSubmitting: true, errorMessage: null);
 
     try {
-      final completeOnboarding = ref.read(completeInitialOnboardingUseCaseProvider);
-      
-      final targetAmount = MoneyParser.parse(state.targetAmountText, state.currency);
+      final completeOnboarding = ref.read(
+        completeInitialOnboardingUseCaseProvider,
+      );
+
+      final targetAmount = MoneyParser.parse(
+        state.targetAmountText,
+        state.currency,
+      );
       final initialSavings = state.initialSavingsText.trim().isEmpty
           ? Money(minorUnits: 0, currency: state.currency)
           : MoneyParser.parse(state.initialSavingsText, state.currency);
@@ -146,7 +171,7 @@ class OnboardingDraftNotifier extends Notifier<OnboardingDraftState> {
         frequency: state.frequency,
         initialSavings: initialSavings,
       );
-      
+
       return true;
     } catch (e) {
       state = state.copyWith(isSubmitting: false, errorMessage: e.toString());
@@ -155,6 +180,7 @@ class OnboardingDraftNotifier extends Notifier<OnboardingDraftState> {
   }
 }
 
-final onboardingDraftNotifierProvider = NotifierProvider<OnboardingDraftNotifier, OnboardingDraftState>(
-  OnboardingDraftNotifier.new,
-);
+final onboardingDraftNotifierProvider =
+    NotifierProvider<OnboardingDraftNotifier, OnboardingDraftState>(
+      OnboardingDraftNotifier.new,
+    );

@@ -14,7 +14,8 @@ class SecondaryActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final interaction = theme.extension<AppInteraction>() ?? AppInteraction.regular;
+    final interaction =
+        theme.extension<AppInteraction>() ?? AppInteraction.regular;
 
     return Semantics(
       button: true,
@@ -24,10 +25,14 @@ class SecondaryActionButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           minimumSize: Size.fromHeight(interaction.primaryButtonHeight),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(interaction.primaryButtonRadius),
+            borderRadius: BorderRadius.circular(
+              interaction.primaryButtonRadius,
+            ),
           ),
           side: BorderSide(
-            color: onPressed != null ? theme.colorScheme.outline : theme.colorScheme.outline.withValues(alpha: 0.38),
+            color: onPressed != null
+                ? theme.colorScheme.outline
+                : theme.colorScheme.outline.withValues(alpha: 0.38),
           ),
         ),
         onPressed: onPressed,
@@ -35,7 +40,9 @@ class SecondaryActionButton extends StatelessWidget {
           label,
           style: theme.textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: onPressed != null ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.38),
+            color: onPressed != null
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface.withValues(alpha: 0.38),
           ),
         ),
       ),

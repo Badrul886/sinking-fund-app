@@ -14,7 +14,8 @@ class PrimaryActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final interaction = theme.extension<AppInteraction>() ?? AppInteraction.regular;
+    final interaction =
+        theme.extension<AppInteraction>() ?? AppInteraction.regular;
 
     return Semantics(
       button: true,
@@ -24,13 +25,17 @@ class PrimaryActionButton extends StatelessWidget {
         style: FilledButton.styleFrom(
           minimumSize: Size.fromHeight(interaction.primaryButtonHeight),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(interaction.primaryButtonRadius),
+            borderRadius: BorderRadius.circular(
+              interaction.primaryButtonRadius,
+            ),
           ),
         ),
         onPressed: onPressed,
         child: Text(
           label,
-          style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: theme.textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

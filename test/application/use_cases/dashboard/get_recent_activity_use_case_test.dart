@@ -55,10 +55,7 @@ void main() {
     test('allows DatabaseFailureException to bubble as unexpected', () async {
       repository.shouldThrowDatabaseFailure = true;
 
-      expect(
-        () => useCase.execute(),
-        throwsA(isA<DatabaseFailureException>()),
-      );
+      expect(() => useCase.execute(), throwsA(isA<DatabaseFailureException>()));
     });
 
     test('allows unexpected exceptions to bubble', () async {

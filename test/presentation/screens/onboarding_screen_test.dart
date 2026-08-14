@@ -15,7 +15,8 @@ import 'package:sinking_fund/domain/fund.dart';
 import 'package:sinking_fund/domain/trajectory.dart';
 import 'package:sinking_fund/domain/money.dart';
 
-class MockCompleteInitialOnboardingUseCase implements CompleteInitialOnboardingUseCase {
+class MockCompleteInitialOnboardingUseCase
+    implements CompleteInitialOnboardingUseCase {
   bool called = false;
   bool shouldFail = false;
 
@@ -65,20 +66,23 @@ void main() {
           ),
           GoRoute(
             path: '/',
-            builder: (context, state) => const Scaffold(body: Text('Dashboard')),
+            builder: (context, state) =>
+                const Scaffold(body: Text('Dashboard')),
           ),
         ],
       );
 
       return ProviderScope(
         overrides: [
-          completeInitialOnboardingUseCaseProvider.overrideWithValue(mockCompleteUseCase),
+          completeInitialOnboardingUseCaseProvider.overrideWithValue(
+            mockCompleteUseCase,
+          ),
           clockProvider.overrideWithValue(MockClock()),
-          calculateFundPreviewUseCaseProvider.overrideWithValue(const CalculateFundPreviewUseCase()),
+          calculateFundPreviewUseCaseProvider.overrideWithValue(
+            const CalculateFundPreviewUseCase(),
+          ),
         ],
-        child: MaterialApp.router(
-          routerConfig: router,
-        ),
+        child: MaterialApp.router(routerConfig: router),
       );
     }
 
@@ -88,7 +92,7 @@ void main() {
 
     testWidgets('completes onboarding flow', (WidgetTester tester) async {
       await tester.pumpWidget(createTestableWidget());
-      
+
       // Step 0: Welcome
       expect(find.text('Welcome to Sinking Fund!'), findsOneWidget);
       await tester.tap(find.text('Start'));
@@ -98,22 +102,22 @@ void main() {
       expect(find.text('Fund Name'), findsOneWidget);
       await tester.enterText(find.byType(TextField).at(0), 'My Fund');
       await tester.enterText(find.byType(TextField).at(1), '1000.00');
-      
+
       // Need to open date picker
       await tester.tap(find.text('Select a date'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
-      
+
       await tester.enterText(find.byType(TextField).at(2), '100.00');
-      
+
       await tester.tap(find.text('Preview'));
       await tester.pumpAndSettle();
 
       // Step 2: Preview
       expect(find.text('My Fund'), findsOneWidget);
       expect(find.text('Looks Good'), findsOneWidget);
-      
+
       await tester.tap(find.text('Looks Good'));
       await tester.pumpAndSettle();
 
@@ -129,7 +133,7 @@ void main() {
 
     testWidgets('back navigation retains state', (WidgetTester tester) async {
       await tester.pumpWidget(createTestableWidget());
-      
+
       await tester.tap(find.text('Start'));
       await tester.pumpAndSettle();
 
@@ -148,15 +152,15 @@ void main() {
 
     testWidgets('failure keeps draft state', (WidgetTester tester) async {
       mockCompleteUseCase.shouldFail = true;
-      
+
       await tester.pumpWidget(createTestableWidget());
-      
+
       await tester.tap(find.text('Start'));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField).at(0), 'Test Name');
       await tester.enterText(find.byType(TextField).at(1), '1000.00');
-      
+
       // Date
       await tester.tap(find.text('Select a date'));
       await tester.pumpAndSettle();
@@ -165,7 +169,7 @@ void main() {
 
       await tester.tap(find.text('Preview'));
       await tester.pumpAndSettle();
-      
+
       await tester.tap(find.text('Looks Good'));
       await tester.pumpAndSettle();
 

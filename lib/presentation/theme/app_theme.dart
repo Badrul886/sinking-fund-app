@@ -23,7 +23,10 @@ class AppTheme {
         AppElevation.regular,
         AppInteraction.regular,
         AppAnimation.regular,
-        AppSemanticColors(surfaceElevated: AppColors.lightSurfaceElevated, textMuted: AppColors.lightTextMuted),
+        AppSemanticColors(
+          surfaceElevated: AppColors.lightSurfaceElevated,
+          textMuted: AppColors.lightTextMuted,
+        ),
       ],
     );
   }
@@ -44,7 +47,10 @@ class AppTheme {
         AppElevation.regular,
         AppInteraction.regular,
         AppAnimation.regular,
-        AppSemanticColors(surfaceElevated: AppColors.darkSurfaceElevated, textMuted: AppColors.darkTextMuted),
+        AppSemanticColors(
+          surfaceElevated: AppColors.darkSurfaceElevated,
+          textMuted: AppColors.darkTextMuted,
+        ),
       ],
     );
   }

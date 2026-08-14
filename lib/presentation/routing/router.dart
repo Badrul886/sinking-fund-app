@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/onboarding_state_provider.dart';
 import '../screens/onboarding/onboarding_screen.dart';
+import '../screens/dashboard/dashboard_screen.dart';
 
 // Placeholder screen to prove routing without building the real UI (Phase 5C)
 class PlaceholderScreen extends StatelessWidget {
@@ -39,41 +40,40 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: notifier,
     redirect: (context, state) {
       final onboardingState = ref.read(onboardingStateProvider);
-      
+
       // While we are loading the onboarding status from the DB, we shouldn't force a redirect yet.
       if (onboardingState.isLoading) {
         return null; // Could optionally redirect to a /splash route here
       }
-      
+
       final isComplete = onboardingState.value ?? false;
       final isGoingToOnboarding = state.matchedLocation == '/onboarding';
 
       if (!isComplete && !isGoingToOnboarding) {
         return '/onboarding';
       }
-      
+
       if (isComplete && isGoingToOnboarding) {
         return '/';
       }
-      
+
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const PlaceholderScreen(title: 'Dashboard'),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const DashboardScreen()),
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         path: '/fund/create',
-        builder: (context, state) => const PlaceholderScreen(title: 'Create Fund'),
+        builder: (context, state) =>
+            const PlaceholderScreen(title: 'Create Fund'),
       ),
       GoRoute(
         path: '/fund/:id',
-        builder: (context, state) => const PlaceholderScreen(title: 'Fund Detail'),
+        builder: (context, state) =>
+            const PlaceholderScreen(title: 'Fund Detail'),
       ),
     ],
   );

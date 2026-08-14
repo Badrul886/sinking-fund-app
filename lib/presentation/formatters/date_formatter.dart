@@ -19,10 +19,10 @@ class DateFormatter {
   /// (e.g. "Today", "Tomorrow", "In 30 days", "30 days ago")
   String formatRelative(CalendarDate date) {
     final today = clock.today();
-    
+
     final currentDt = DateTime.utc(today.year, today.month, today.day);
     final targetDt = DateTime.utc(date.year, date.month, date.day);
-    
+
     final difference = targetDt.difference(currentDt).inDays;
 
     if (difference == 0) {
@@ -41,10 +41,10 @@ class DateFormatter {
   /// Calculates presentation-only days remaining.
   int getDaysRemaining(CalendarDate date) {
     final today = clock.today();
-    
+
     final currentDt = DateTime.utc(today.year, today.month, today.day);
     final targetDt = DateTime.utc(date.year, date.month, date.day);
-    
+
     return targetDt.difference(currentDt).inDays;
   }
 }

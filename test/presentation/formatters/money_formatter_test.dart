@@ -20,7 +20,10 @@ void main() {
       final money = Money(minorUnits: -123456789, currency: jpy);
 
       final result = formatter.format(money);
-      expect(result, '-¥123,456,789'); // en_US standard for JPY is -¥123,456,789
+      expect(
+        result,
+        '-¥123,456,789',
+      ); // en_US standard for JPY is -¥123,456,789
     });
 
     test('formats two decimals (USD)', () {
@@ -58,7 +61,7 @@ void main() {
       final result = formatter.format(money);
       expect(result, '\$0.05');
     });
-    
+
     test('formats fraction only negative (USD)', () {
       final formatter = const MoneyFormatter(locale: 'en_US');
       final usd = const Currency('USD');
@@ -82,11 +85,11 @@ void main() {
     test('handles large integers without double precision loss', () {
       final formatter = const MoneyFormatter(locale: 'en_US');
       final usd = const Currency('USD');
-      
-      // Dart integers are 64-bit on native. 
+
+      // Dart integers are 64-bit on native.
       // A number that cannot be represented accurately in double: 9007199254740993 (2^53 + 1)
       final money = Money(minorUnits: 9007199254740993, currency: usd);
-      
+
       final result = formatter.format(money);
       expect(result, '\$90,071,992,547,409.93');
     });

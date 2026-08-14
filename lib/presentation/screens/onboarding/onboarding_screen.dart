@@ -26,7 +26,9 @@ class OnboardingScreen extends ConsumerWidget {
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  ref.read(onboardingDraftNotifierProvider.notifier).previousStep();
+                  ref
+                      .read(onboardingDraftNotifierProvider.notifier)
+                      .previousStep();
                 },
               )
             : null,
@@ -38,7 +40,11 @@ class OnboardingScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStepContent(BuildContext context, OnboardingDraftState state, WidgetRef ref) {
+  Widget _buildStepContent(
+    BuildContext context,
+    OnboardingDraftState state,
+    WidgetRef ref,
+  ) {
     switch (state.currentStep) {
       case 0:
         return _WelcomeStep(key: const ValueKey(0));
@@ -75,7 +81,12 @@ class _WelcomeStep extends ConsumerWidget {
                   color: Colors.grey,
                   shape: BoxShape.circle,
                 ),
-                child: Center(child: Text('Mascot\nPlaceholder', textAlign: TextAlign.center)),
+                child: Center(
+                  child: Text(
+                    'Mascot\nPlaceholder',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
           ),
@@ -126,7 +137,10 @@ class _InputsStep extends ConsumerWidget {
               ),
             ),
           TextField(
-            decoration: const InputDecoration(labelText: 'Fund Name', border: OutlineInputBorder()),
+            decoration: const InputDecoration(
+              labelText: 'Fund Name',
+              border: OutlineInputBorder(),
+            ),
             onChanged: notifier.updateName,
             controller: TextEditingController.fromValue(
               TextEditingValue(
@@ -137,13 +151,18 @@ class _InputsStep extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           TextField(
-            decoration: const InputDecoration(labelText: 'Target Amount', border: OutlineInputBorder()),
+            decoration: const InputDecoration(
+              labelText: 'Target Amount',
+              border: OutlineInputBorder(),
+            ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: notifier.updateTargetAmountText,
             controller: TextEditingController.fromValue(
               TextEditingValue(
                 text: state.targetAmountText,
-                selection: TextSelection.collapsed(offset: state.targetAmountText.length),
+                selection: TextSelection.collapsed(
+                  offset: state.targetAmountText.length,
+                ),
               ),
             ),
           ),
@@ -163,7 +182,9 @@ class _InputsStep extends ConsumerWidget {
                 lastDate: now.add(const Duration(days: 365 * 50)),
               );
               if (date != null) {
-                notifier.updateTargetDate(CalendarDate(date.year, date.month, date.day));
+                notifier.updateTargetDate(
+                  CalendarDate(date.year, date.month, date.day),
+                );
               }
             },
             child: InputDecorator(
@@ -176,7 +197,10 @@ class _InputsStep extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<ContributionFrequency>(
-            decoration: const InputDecoration(labelText: 'Contribution Frequency', border: OutlineInputBorder()),
+            decoration: const InputDecoration(
+              labelText: 'Contribution Frequency',
+              border: OutlineInputBorder(),
+            ),
             initialValue: state.frequency,
             items: ContributionFrequency.values.map((f) {
               return DropdownMenuItem(
@@ -200,15 +224,14 @@ class _InputsStep extends ConsumerWidget {
             controller: TextEditingController.fromValue(
               TextEditingValue(
                 text: state.initialSavingsText,
-                selection: TextSelection.collapsed(offset: state.initialSavingsText.length),
+                selection: TextSelection.collapsed(
+                  offset: state.initialSavingsText.length,
+                ),
               ),
             ),
           ),
           const SizedBox(height: 32),
-          PrimaryActionButton(
-            label: 'Preview',
-            onPressed: notifier.nextStep,
-          ),
+          PrimaryActionButton(label: 'Preview', onPressed: notifier.nextStep),
         ],
       ),
     );
@@ -227,10 +250,11 @@ class _PreviewStep extends ConsumerWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final isSuccess = preview.calculationResult.status == FundStatus.onTrack || 
-                      preview.calculationResult.status == FundStatus.ahead ||
-                      preview.calculationResult.status == FundStatus.complete ||
-                      preview.calculationResult.status == FundStatus.overfunded;
+    final isSuccess =
+        preview.calculationResult.status == FundStatus.onTrack ||
+        preview.calculationResult.status == FundStatus.ahead ||
+        preview.calculationResult.status == FundStatus.complete ||
+        preview.calculationResult.status == FundStatus.overfunded;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
@@ -250,9 +274,7 @@ class _PreviewStep extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
-          ProgressVisualizer(
-            progress: preview.calculationResult.progress,
-          ),
+          ProgressVisualizer(progress: preview.calculationResult.progress),
           const SizedBox(height: 32),
           if (isSuccess) ...[
             const Icon(Icons.check_circle, color: Colors.green, size: 48),
@@ -323,7 +345,9 @@ class _ConfirmationStep extends ConsumerWidget {
             PrimaryActionButton(
               label: 'Create Fund',
               onPressed: () async {
-                final success = await ref.read(onboardingDraftNotifierProvider.notifier).submit();
+                final success = await ref
+                    .read(onboardingDraftNotifierProvider.notifier)
+                    .submit();
                 if (success && context.mounted) {
                   context.go('/');
                 }

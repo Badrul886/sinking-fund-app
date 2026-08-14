@@ -68,7 +68,8 @@ class AppRadii extends ThemeExtension<AppRadii> {
   ThemeExtension<AppRadii> copyWith() => this;
 
   @override
-  ThemeExtension<AppRadii> lerp(ThemeExtension<AppRadii>? other, double t) => this;
+  ThemeExtension<AppRadii> lerp(ThemeExtension<AppRadii>? other, double t) =>
+      this;
 }
 
 class AppElevation extends ThemeExtension<AppElevation> {
@@ -98,7 +99,10 @@ class AppElevation extends ThemeExtension<AppElevation> {
   ThemeExtension<AppElevation> copyWith() => this;
 
   @override
-  ThemeExtension<AppElevation> lerp(ThemeExtension<AppElevation>? other, double t) => this;
+  ThemeExtension<AppElevation> lerp(
+    ThemeExtension<AppElevation>? other,
+    double t,
+  ) => this;
 }
 
 class AppInteraction extends ThemeExtension<AppInteraction> {
@@ -128,7 +132,10 @@ class AppInteraction extends ThemeExtension<AppInteraction> {
   ThemeExtension<AppInteraction> copyWith() => this;
 
   @override
-  ThemeExtension<AppInteraction> lerp(ThemeExtension<AppInteraction>? other, double t) => this;
+  ThemeExtension<AppInteraction> lerp(
+    ThemeExtension<AppInteraction>? other,
+    double t,
+  ) => this;
 }
 
 class AppAnimation extends ThemeExtension<AppAnimation> {
@@ -152,7 +159,10 @@ class AppAnimation extends ThemeExtension<AppAnimation> {
   ThemeExtension<AppAnimation> copyWith() => this;
 
   @override
-  ThemeExtension<AppAnimation> lerp(ThemeExtension<AppAnimation>? other, double t) => this;
+  ThemeExtension<AppAnimation> lerp(
+    ThemeExtension<AppAnimation>? other,
+    double t,
+  ) => this;
 }
 
 class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
@@ -168,7 +178,10 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
   ThemeExtension<AppSemanticColors> copyWith() => this;
 
   @override
-  ThemeExtension<AppSemanticColors> lerp(ThemeExtension<AppSemanticColors>? other, double t) => this;
+  ThemeExtension<AppSemanticColors> lerp(
+    ThemeExtension<AppSemanticColors>? other,
+    double t,
+  ) => this;
 }
 
 extension AppThemeExtensions on ThemeData {

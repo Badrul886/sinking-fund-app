@@ -8,14 +8,13 @@ import 'package:sinking_fund/presentation/widgets/data_display/progress_visualiz
 
 void main() {
   group('Accessibility & Semantics', () {
-    testWidgets('PrimaryActionButton meets minimum touch target', (tester) async {
+    testWidgets('PrimaryActionButton meets minimum touch target', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PrimaryActionButton(
-              label: 'Test',
-              onPressed: () {},
-            ),
+            body: PrimaryActionButton(label: 'Test', onPressed: () {}),
           ),
         ),
       );
@@ -41,13 +40,11 @@ void main() {
       expect(semantics.label, '\$1,234.56');
     });
 
-    testWidgets('ProgressVisualizer exposes semantics and handles overfunded', (tester) async {
+    testWidgets('ProgressVisualizer exposes semantics and handles overfunded', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ProgressVisualizer(progress: 1.25),
-          ),
-        ),
+        MaterialApp(home: Scaffold(body: ProgressVisualizer(progress: 1.25))),
       );
 
       final semantics = tester.getSemantics(find.byType(ProgressVisualizer));
@@ -55,14 +52,18 @@ void main() {
       expect(semantics.value, '100%'); // Visual clamp
     });
 
-    testWidgets('AmountDisplay scales text without clipping layout bounds', (tester) async {
+    testWidgets('AmountDisplay scales text without clipping layout bounds', (
+      tester,
+    ) async {
       final usd = const Currency('USD');
       final amount = Money(minorUnits: 123456, currency: usd); // $1,234.56
 
       await tester.pumpWidget(
         MaterialApp(
           home: MediaQuery(
-            data: const MediaQueryData(textScaler: TextScaler.linear(3.0)), // Extreme scale
+            data: const MediaQueryData(
+              textScaler: TextScaler.linear(3.0),
+            ), // Extreme scale
             child: Scaffold(
               body: Center(
                 child: AmountDisplay(amount: amount, locale: 'en_US'),

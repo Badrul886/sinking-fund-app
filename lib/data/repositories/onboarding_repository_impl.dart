@@ -11,7 +11,10 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   OnboardingRepositoryImpl(this._db);
 
   @override
-  Future<void> completeOnboarding(Fund fund, Transaction? initialTransaction) async {
+  Future<void> completeOnboarding(
+    Fund fund,
+    Transaction? initialTransaction,
+  ) async {
     try {
       await _db.transaction(() async {
         // 1. Persist Fund

@@ -33,7 +33,10 @@ class MockOnboardingRepository implements OnboardingRepository {
   bool shouldThrow = false;
 
   @override
-  Future<void> completeOnboarding(Fund fund, Transaction? initialTransaction) async {
+  Future<void> completeOnboarding(
+    Fund fund,
+    Transaction? initialTransaction,
+  ) async {
     if (shouldThrow) {
       throw Exception('Database Error');
     }
@@ -53,45 +56,58 @@ void main() {
       clock = MockClock(DateTime(2025, 1, 1));
       identifierGenerator = MockIdentifierGenerator();
       repository = MockOnboardingRepository();
-      useCase = CompleteInitialOnboardingUseCase(clock, repository, identifierGenerator);
-    });
-
-    test('successfully completes onboarding with initial savings = 0', () async {
-      final preview = await useCase.execute(
-        name: 'Vacation',
-        targetAmount: Money(minorUnits: 100000, currency: Currency('USD')),
-        targetDate: CalendarDate(2025, 12, 31),
-        frequency: ContributionFrequency.monthly,
-        initialSavings: Money(minorUnits: 0, currency: Currency('USD')),
+      useCase = CompleteInitialOnboardingUseCase(
+        clock,
+        repository,
+        identifierGenerator,
       );
-
-      expect(repository.savedFund, isNotNull);
-      expect(repository.savedFund!.name, 'Vacation');
-      expect(repository.savedFund!.startDate, CalendarDate(2025, 1, 1)); // From clock
-      expect(repository.savedTransaction, isNull);
-      
-      expect(preview.calculationResult, isNotNull);
-      expect(preview.trajectory, isNotNull);
     });
 
-    test('successfully completes onboarding with initial savings > 0', () async {
-      final preview = await useCase.execute(
-        name: 'Car',
-        targetAmount: Money(minorUnits: 500000, currency: Currency('USD')),
-        targetDate: CalendarDate(2025, 12, 31),
-        frequency: ContributionFrequency.monthly,
-        initialSavings: Money(minorUnits: 50000, currency: Currency('USD')),
-      );
+    test(
+      'successfully completes onboarding with initial savings = 0',
+      () async {
+        final preview = await useCase.execute(
+          name: 'Vacation',
+          targetAmount: Money(minorUnits: 100000, currency: Currency('USD')),
+          targetDate: CalendarDate(2025, 12, 31),
+          frequency: ContributionFrequency.monthly,
+          initialSavings: Money(minorUnits: 0, currency: Currency('USD')),
+        );
 
-      expect(repository.savedFund, isNotNull);
-      expect(repository.savedFund!.id, 'id_1');
-      expect(repository.savedTransaction, isNotNull);
-      expect(repository.savedTransaction!.id, 'id_2');
-      expect(repository.savedTransaction!.amount.minorUnits, 50000);
-      
-      // Calculate should reflect the initial savings
-      expect(preview.calculationResult.currentBalance.minorUnits, 50000);
-    });
+        expect(repository.savedFund, isNotNull);
+        expect(repository.savedFund!.name, 'Vacation');
+        expect(
+          repository.savedFund!.startDate,
+          CalendarDate(2025, 1, 1),
+        ); // From clock
+        expect(repository.savedTransaction, isNull);
+
+        expect(preview.calculationResult, isNotNull);
+        expect(preview.trajectory, isNotNull);
+      },
+    );
+
+    test(
+      'successfully completes onboarding with initial savings > 0',
+      () async {
+        final preview = await useCase.execute(
+          name: 'Car',
+          targetAmount: Money(minorUnits: 500000, currency: Currency('USD')),
+          targetDate: CalendarDate(2025, 12, 31),
+          frequency: ContributionFrequency.monthly,
+          initialSavings: Money(minorUnits: 50000, currency: Currency('USD')),
+        );
+
+        expect(repository.savedFund, isNotNull);
+        expect(repository.savedFund!.id, 'id_1');
+        expect(repository.savedTransaction, isNotNull);
+        expect(repository.savedTransaction!.id, 'id_2');
+        expect(repository.savedTransaction!.amount.minorUnits, 50000);
+
+        // Calculate should reflect the initial savings
+        expect(preview.calculationResult.currentBalance.minorUnits, 50000);
+      },
+    );
 
     test('bubbles up persistence failure', () async {
       repository.shouldThrow = true;

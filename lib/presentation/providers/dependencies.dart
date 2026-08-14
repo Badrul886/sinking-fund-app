@@ -19,6 +19,10 @@ import '../../application/ports/onboarding_repository.dart';
 import '../../data/repositories/onboarding_repository_impl.dart';
 import '../../application/use_cases/onboarding/complete_initial_onboarding_use_case.dart';
 import '../../application/use_cases/fund/calculate_fund_preview_use_case.dart';
+import '../../application/ports/recent_activity_repository.dart';
+import '../../data/repositories/recent_activity_repository_impl.dart';
+import '../../application/use_cases/dashboard/get_recent_activity_use_case.dart';
+
 // Database Provider
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -72,16 +76,25 @@ final addWithdrawalUseCaseProvider = Provider<AddWithdrawalUseCase>((ref) {
   );
 });
 
-final onboardingSettingsRepositoryProvider = Provider<OnboardingSettingsRepository>((ref) {
-  return SettingsRepositoryImpl(ref.watch(databaseProvider));
-});
+final onboardingSettingsRepositoryProvider =
+    Provider<OnboardingSettingsRepository>((ref) {
+      return SettingsRepositoryImpl(ref.watch(databaseProvider));
+    });
 
-final getOnboardingStatusUseCaseProvider = Provider<GetOnboardingStatusUseCase>((ref) {
-  return GetOnboardingStatusUseCase(ref.watch(onboardingSettingsRepositoryProvider));
-});
+final getOnboardingStatusUseCaseProvider = Provider<GetOnboardingStatusUseCase>(
+  (ref) {
+    return GetOnboardingStatusUseCase(
+      ref.watch(onboardingSettingsRepositoryProvider),
+    );
+  },
+);
 
-final completeOnboardingUseCaseProvider = Provider<CompleteOnboardingUseCase>((ref) {
-  return CompleteOnboardingUseCase(ref.watch(onboardingSettingsRepositoryProvider));
+final completeOnboardingUseCaseProvider = Provider<CompleteOnboardingUseCase>((
+  ref,
+) {
+  return CompleteOnboardingUseCase(
+    ref.watch(onboardingSettingsRepositoryProvider),
+  );
 });
 
 // New Onboarding Repository and Use Case
@@ -89,14 +102,28 @@ final onboardingRepositoryProvider = Provider<OnboardingRepository>((ref) {
   return OnboardingRepositoryImpl(ref.watch(databaseProvider));
 });
 
-final completeInitialOnboardingUseCaseProvider = Provider<CompleteInitialOnboardingUseCase>((ref) {
-  return CompleteInitialOnboardingUseCase(
-    ref.watch(clockProvider),
-    ref.watch(onboardingRepositoryProvider),
-    ref.watch(identifierGeneratorProvider),
-  );
+final completeInitialOnboardingUseCaseProvider =
+    Provider<CompleteInitialOnboardingUseCase>((ref) {
+      return CompleteInitialOnboardingUseCase(
+        ref.watch(clockProvider),
+        ref.watch(onboardingRepositoryProvider),
+        ref.watch(identifierGeneratorProvider),
+      );
+    });
+
+final calculateFundPreviewUseCaseProvider =
+    Provider<CalculateFundPreviewUseCase>((ref) {
+      return CalculateFundPreviewUseCase();
+    });
+
+final recentActivityRepositoryProvider = Provider<RecentActivityRepository>((
+  ref,
+) {
+  return RecentActivityRepositoryImpl(ref.watch(databaseProvider));
 });
 
-final calculateFundPreviewUseCaseProvider = Provider<CalculateFundPreviewUseCase>((ref) {
-  return CalculateFundPreviewUseCase();
+final getRecentActivityUseCaseProvider = Provider<GetRecentActivityUseCase>((
+  ref,
+) {
+  return GetRecentActivityUseCase(ref.watch(recentActivityRepositoryProvider));
 });

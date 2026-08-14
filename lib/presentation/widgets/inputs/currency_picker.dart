@@ -29,7 +29,9 @@ class _CurrencyPickerState extends State<CurrencyPicker> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('${widget.selectedCurrency.code} - ${iso4217Currencies[widget.selectedCurrency.code]?.name ?? ''}'),
+            Text(
+              '${widget.selectedCurrency.code} - ${iso4217Currencies[widget.selectedCurrency.code]?.name ?? ''}',
+            ),
             const Icon(Icons.arrow_drop_down),
           ],
         ),
@@ -78,7 +80,7 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
     final filteredCurrencies = _allCurrencies.where((c) {
       final query = _searchQuery.toLowerCase();
       return c.alpha3Code.toLowerCase().contains(query) ||
-             c.name.toLowerCase().contains(query);
+          c.name.toLowerCase().contains(query);
     }).toList();
 
     return Padding(
@@ -91,7 +93,10 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Select Currency', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const Text(
+            'Select Currency',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
           TextField(
             decoration: const InputDecoration(
@@ -115,7 +120,8 @@ class _CurrencyPickerSheetState extends State<_CurrencyPickerSheet> {
                 return ListTile(
                   title: Text(c.alpha3Code),
                   subtitle: Text(c.name),
-                  onTap: () => widget.onCurrencySelected(Currency(c.alpha3Code)),
+                  onTap: () =>
+                      widget.onCurrencySelected(Currency(c.alpha3Code)),
                 );
               },
             ),

@@ -54,18 +54,20 @@ class CompleteInitialOnboardingUseCase {
     await _onboardingRepository.completeOnboarding(fund, initialContribution);
 
     // After persistence, calculate the final authoritative state to return
-    final transactions = initialContribution != null ? [initialContribution] : <Transaction>[];
-    
+    final transactions = initialContribution != null
+        ? [initialContribution]
+        : <Transaction>[];
+
     final calculationResult = FundCalculator.calculate(
-      fund: fund, 
+      fund: fund,
       currentDate: startDate,
-      transactions: transactions
+      transactions: transactions,
     );
-    
+
     final trajectory = TrajectoryCalculator.calculate(
-      fund: fund, 
-      transactions: transactions, 
-      currentDate: startDate
+      fund: fund,
+      transactions: transactions,
+      currentDate: startDate,
     );
 
     return FundPreview(

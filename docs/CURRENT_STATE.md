@@ -6,7 +6,7 @@
 Sinking Fund Mobile Application
 
 ## Current phase
-`PHASE_3_APPLICATION_LAYER`
+`PHASE_4_COMPOSITION_AND_WIRING`
 
 ## Phase 2 status
 COMPLETE AND COMMITTED
@@ -17,7 +17,19 @@ Actual Phase 2 achievements:
 - Implemented FundRepositoryImpl with DTO mapping
 - 100% test pass rate for repository round-trips
 
-## Phase 1 status
+## Phase 3 status
+COMPLETE (Pending Commit)
+
+Actual Phase 3 achievements:
+- Implemented pure Dart Application Layer.
+- Created constructor-injected Use Cases (CreateFund, GetFund, GetAllFunds, AddContribution, AddWithdrawal).
+- Created FundState aggregate model.
+- Created ApplicationError mapping from data/domain exceptions.
+- Abstracted IdentifierGenerator port.
+- Deferred all Riverpod and external UUID dependencies to Phase 4.
+- 100% test pass rate for use cases.
+
+## Phase 2 status
 COMPLETE AND COMMITTED
 
 Actual Phase 1 achievements:
@@ -55,12 +67,12 @@ Actual Phase 0 achievements:
 ## Current state
 - Pure Dart financial domain is complete and tested.
 - Drift/SQLite local persistence is complete and tested.
-- Repository/data boundary is established.
-- The repository is clean and synchronized with origin/main.
-- The next active work is Application Layer planning.
+- Application Layer orchestrates use cases with strict boundaries.
+- Repository is clean (pending Phase 3 commit).
+- The next active work is Phase 4 Composition & Wiring.
 
 ## Active work
-PHASE 3 — APPLICATION LAYER PLANNING
+PHASE 4 — COMPOSITION AND WIRING
 
 ## Blocked / unresolved
 None.
@@ -72,7 +84,7 @@ None.
 See `docs/DECISIONS.md`.
 
 ## Next action
-Produce and review the Phase 3 Application Layer implementation plan before coding.
+Review/Implement Phase 4 Composition and Wiring.
 
 ## Last updated
 2026-08-14

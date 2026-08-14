@@ -328,3 +328,48 @@ This avoids defining special edge-case states in the domain logic while strictly
 - docs/CALCULATION_SPEC.md
 - lib/domain/fund_calculator.dart
 
+---
+
+## Decision: Application Layer Boundaries & Framework Deferral
+**Date:** 2026-08-14
+**Status:** Accepted
+
+### Context
+Phase 3 requires building the Application layer (Use Cases) to orchestrate the Domain and Data layers without tightly coupling the core logic to Flutter or Riverpod.
+
+### Decision
+The Application layer is built as pure Dart, utilizing strict Constructor Dependency Injection. All Riverpod providers, Notifiers, and external framework dependencies (like UUID) are explicitly deferred to Phase 4 (Composition and Wiring).
+
+### Rationale
+This ensures that the business logic can be tested entirely in isolation (using simple Fakes) without needing ProviderScopes or Flutter testing environments. It forces a clean boundary before introducing reactive state.
+
+### Consequences
+- Requires explicit `Port` interfaces (e.g., `IdentifierGenerator`) for external concerns.
+- Use Cases must be manually wired in tests.
+
+### Related files
+- `lib/application/use_cases/`
+- `docs/ARCHITECTURE.md`
+
+---
+
+## Decision: Error Handling & Mapping Boundary
+**Date:** 2026-08-14
+**Status:** Accepted
+
+### Context
+The Domain layer throws `ValidationException` and `InsufficientFundsException`. The Data layer throws `RecordNotFoundException` and `ConstraintViolationException`. The Presentation layer needs a unified way to handle these expected errors without exposing underlying implementation details.
+
+### Decision
+The Application layer catches expected Domain and Data exceptions and maps them into a sealed `ApplicationError` hierarchy (`FundNotFoundError`, `InvalidFundDataError`, `PersistenceConstraintError`, `InsufficientFundsError`). Unexpected exceptions (e.g., network, filesystem crashes) are allowed to bubble up naturally.
+
+### Rationale
+This prevents the Presentation layer from needing to know about Drift-specific or Domain-specific exception types, enforcing the Application layer as the authoritative boundary for error translation.
+
+### Consequences
+- Requires try/catch blocks in every Use Case to map known exceptions.
+- Provides a clean, exhaustive error enum/sealed class for the UI to handle.
+
+### Related files
+- `lib/application/errors/application_error.dart`
+

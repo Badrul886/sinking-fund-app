@@ -25,3 +25,7 @@ None.
 - CalendarDate and ContributionSchedule for recurring dates.
 - FundCalculator that correctly resolves Fund progress, remaining amount, required contribution, expected balance, and status precedence.
 - Comprehensive domain test suite.
+- Phase 2: Local data persistence with Drift SQLite and DTO mapping.
+- Phase 3: Pure Dart Application Layer with constructor-injected Use Cases (CreateFund, GetFund, AddContribution, AddWithdrawal).
+- `FundState` presentation model and `ApplicationError` mapping.
+- `IdentifierGenerator` port to isolate UUID generation from application logic.

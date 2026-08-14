@@ -18,7 +18,7 @@ Strict unidirectional dependency flow:
 
 Presentation (Flutter Widgets, GoRouter, Riverpod Wiring)
 ↓
-Application (Use Cases, Controllers, independent of Riverpod)
+Application (Use Cases, `FundState`, `ApplicationError`, Ports, independent of Riverpod, uses Constructor Injection)
 ↓
 Domain (Pure Dart Entities, `Money`, Calculation Engine, Repository Interfaces)
 ↑

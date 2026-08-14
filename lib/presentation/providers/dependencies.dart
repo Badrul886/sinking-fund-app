@@ -11,6 +11,10 @@ import '../../application/use_cases/fund/get_fund_use_case.dart';
 import '../../application/use_cases/fund/get_all_funds_use_case.dart';
 import '../../application/use_cases/transaction/add_contribution_use_case.dart';
 import '../../application/use_cases/transaction/add_withdrawal_use_case.dart';
+import '../../data/repositories/settings_repository_impl.dart';
+import '../../application/ports/onboarding_settings_repository.dart';
+import '../../application/use_cases/onboarding/get_onboarding_status_use_case.dart';
+import '../../application/use_cases/onboarding/complete_onboarding_use_case.dart';
 
 // Database Provider
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -63,4 +67,16 @@ final addWithdrawalUseCaseProvider = Provider<AddWithdrawalUseCase>((ref) {
     ref.watch(getFundUseCaseProvider),
     ref.watch(identifierGeneratorProvider),
   );
+});
+
+final onboardingSettingsRepositoryProvider = Provider<OnboardingSettingsRepository>((ref) {
+  return SettingsRepositoryImpl(ref.watch(databaseProvider));
+});
+
+final getOnboardingStatusUseCaseProvider = Provider<GetOnboardingStatusUseCase>((ref) {
+  return GetOnboardingStatusUseCase(ref.watch(onboardingSettingsRepositoryProvider));
+});
+
+final completeOnboardingUseCaseProvider = Provider<CompleteOnboardingUseCase>((ref) {
+  return CompleteOnboardingUseCase(ref.watch(onboardingSettingsRepositoryProvider));
 });

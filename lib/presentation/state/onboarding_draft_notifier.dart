@@ -76,11 +76,17 @@ class OnboardingDraftNotifier extends Notifier<OnboardingDraftState> {
     if (state.currentStep == 1) {
       // Transitioning to Preview step. We must calculate the preview intentionally.
       try {
-        if (state.name.trim().isEmpty) throw const FormatException('Name cannot be empty');
-        if (state.targetDate == null) throw const FormatException('Target date is required');
+        if (state.name.trim().isEmpty) {
+          throw const FormatException('Name cannot be empty');
+        }
+        if (state.targetDate == null) {
+          throw const FormatException('Target date is required');
+        }
         
         final targetAmount = MoneyParser.parse(state.targetAmountText, state.currency);
-        if (targetAmount.minorUnits <= 0) throw const FormatException('Target amount must be greater than zero');
+        if (targetAmount.minorUnits <= 0) {
+          throw const FormatException('Target amount must be greater than zero');
+        }
         
         Money initialSavings;
         if (state.initialSavingsText.trim().isEmpty) {

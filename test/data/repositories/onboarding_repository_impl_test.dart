@@ -8,8 +8,6 @@ import 'package:sinking_fund/domain/money.dart';
 import 'package:sinking_fund/domain/currency.dart';
 import 'package:sinking_fund/domain/calendar_date.dart';
 import 'package:sinking_fund/domain/schedule.dart';
-import 'package:sinking_fund/data/exceptions.dart';
-import 'package:drift/drift.dart' as drift;
 
 void main() {
   late AppDatabase db;

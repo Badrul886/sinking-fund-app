@@ -1,24 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../application/models/fund_state.dart';
+import '../../application/models/fund_detail_state.dart';
 import '../../domain/money.dart';
 import '../../domain/calendar_date.dart';
 import '../providers/dependencies.dart';
 import 'funds_list_notifier.dart';
 
 final fundDetailProvider =
-    AsyncNotifierProvider.family<FundDetailNotifier, FundState, String>(
+    AsyncNotifierProvider.family<FundDetailNotifier, FundDetailState, String>(
       FundDetailNotifier.new,
     );
 
-class FundDetailNotifier extends AsyncNotifier<FundState> {
+class FundDetailNotifier extends AsyncNotifier<FundDetailState> {
   final String fundId;
   FundDetailNotifier(this.fundId);
 
   @override
-  Future<FundState> build() async {
-    final useCase = ref.watch(getFundUseCaseProvider);
-    final clock = ref.watch(clockProvider);
-    return useCase.execute(fundId, clock.today());
+  Future<FundDetailState> build() async {
+    final useCase = ref.watch(getFundDetailUseCaseProvider);
+    return useCase.execute(fundId);
   }
 
   // Mutation: Add Contribution

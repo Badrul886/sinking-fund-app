@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../domain/schedule.dart';
 import '../../../domain/calendar_date.dart';
 import '../../../domain/fund.dart';
-import '../../../application/models/fund_preview.dart';
 import '../../state/create_fund_notifier.dart';
 import '../../widgets/inputs/currency_picker.dart';
 import '../../widgets/buttons/primary_action_button.dart';

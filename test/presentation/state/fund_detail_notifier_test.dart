@@ -67,7 +67,10 @@ void main() {
       final detailState = await container.read(
         fundDetailProvider(fundId).future,
       );
-      expect(detailState.calculationResult.currentBalance.minorUnits, 10000);
+      expect(
+        detailState.fundState.calculationResult.currentBalance.minorUnits,
+        10000,
+      );
     });
 
     test('AsyncError is preserved as ApplicationError', () async {

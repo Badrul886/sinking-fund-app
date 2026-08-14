@@ -8,6 +8,7 @@ import '../../core/platform/secure_random_identifier_generator.dart';
 import '../../core/platform/system_clock.dart';
 import '../../application/use_cases/fund/create_fund_use_case.dart';
 import '../../application/use_cases/fund/get_fund_use_case.dart';
+import '../../application/use_cases/fund/get_fund_detail_use_case.dart';
 import '../../application/use_cases/fund/get_all_funds_use_case.dart';
 import '../../application/use_cases/transaction/add_contribution_use_case.dart';
 import '../../application/use_cases/transaction/add_withdrawal_use_case.dart';
@@ -54,6 +55,13 @@ final createFundUseCaseProvider = Provider<CreateFundUseCase>((ref) {
 
 final getFundUseCaseProvider = Provider<GetFundUseCase>((ref) {
   return GetFundUseCase(ref.watch(fundRepositoryProvider));
+});
+
+final getFundDetailUseCaseProvider = Provider<GetFundDetailUseCase>((ref) {
+  return GetFundDetailUseCase(
+    ref.watch(fundRepositoryProvider),
+    ref.watch(clockProvider),
+  );
 });
 
 final getAllFundsUseCaseProvider = Provider<GetAllFundsUseCase>((ref) {

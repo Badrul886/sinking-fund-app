@@ -249,6 +249,14 @@ A custom abstraction guarantees deterministic arithmetic, explicit rounding, and
 
 ---
 
+## Phase 4: Composition & Presentation Layer
+* **Pinned Dependencies:** `flutter_riverpod` is pinned to `^3.4.2` and `go_router` to `^17.3.0` for compatibility with Dart 3.12.
+* **Manual Providers:** Used manual Riverpod 3.x `AsyncNotifier` implementations instead of codegen, utilizing constructor-based arguments for family providers.
+* **Clock Abstraction:** Used a `Clock` application port instead of directly referencing `DateTime.now()` to ensure the domain is decoupled from system time.
+* **Identifier Generation:** Replaced `uuid` package with a native `SecureRandomIdentifierGenerator` implementing RFC 4122 v4.
+
+---
+
 ## Decision: Android Build-Tool Architecture (Built-in Kotlin)
 **Date:** 2026-08-14  
 **Status:** Accepted

@@ -1,5 +1,21 @@
 # Architecture
 
+### Composition & Presentation (Phase 4 & 5)
+Riverpod is strictly used for dependency injection and presentation logic wiring.
+* **Dependencies:** `lib/presentation/providers/dependencies.dart` contains providers for infrastructure components (Repositories, Clock, IdentifierGenerator) and Use Cases.
+* **State Management:** Riverpod `AsyncNotifier` is used to expose Domain state (e.g. `FundState`) to the UI.
+* **Rules:**
+  * Riverpod notifiers **MUST NOT** contain core business logic (calculating progress, balancing amounts). They delegate entirely to Application Use Cases.
+  * We use manual provider definitions, specifically preferring `AsyncNotifier` combined with constructor-based arguments for family providers.
+  * The clock and identifier generator are injected via Application ports to keep the Domain pure.
+  
+## Data Flow
+1. UI interacts with Riverpod Notifier methods.
+2. Notifier calls an Application Use Case.
+3. Use Case performs logic using pure Domain entities and calls Data Repository to persist.
+4. Notifier explicitly invalidates itself (and related list providers) using `ref.invalidateSelf()` and `ref.invalidate(provider)`.
+5. UI rebuilds by observing the updated `AsyncNotifier` state.
+
 ## Status
 `ACCEPTED — Phase 0 Foundation (Hybrid Feature-Oriented Flutter)`
 

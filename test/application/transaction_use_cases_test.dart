@@ -10,7 +10,6 @@ import 'package:sinking_fund/domain/currency.dart';
 import 'package:sinking_fund/domain/calendar_date.dart';
 import 'package:sinking_fund/domain/schedule.dart';
 
-
 import 'fakes.dart';
 
 void main() {

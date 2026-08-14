@@ -6,13 +6,6 @@
 Sinking Fund Mobile Application
 
 ## Current phase
-`PHASE_4_COMPOSITION_AND_WIRING`
-
-## Phase 2 status
-COMPLETE AND COMMITTED
-
-Actual Phase 2 achievements:
-- Implemented local data persistence with Drift SQLite
 - Created AppDatabase and schema
 - Implemented FundRepositoryImpl with DTO mapping
 - 100% test pass rate for repository round-trips
@@ -28,6 +21,12 @@ Actual Phase 3 achievements:
 - Abstracted IdentifierGenerator port.
 - Deferred all Riverpod and external UUID dependencies to Phase 4.
 - 100% test pass rate for use cases.
+
+## Documentation Status
+- The canonical product specification is `MASTER_PRODUCT_SPEC.md` at the repository root.
+- It is tracked by Git.
+- It is the authoritative product requirements source.
+- No duplicate `docs/MASTER_PRODUCT_SPEC.md` should exist.
 
 ## Phase 2 status
 COMPLETE AND COMMITTED

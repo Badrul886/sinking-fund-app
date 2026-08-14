@@ -18,7 +18,14 @@ None.
 
 ### Known issues
 None.
-## [Unreleased]
+## [0.1.0] - Unreleased
+
+### 2026-08-14: Phase 4 Composition Layer Implementation
+- Created infrastructure ports and adapters (`SystemClock`, `SecureRandomIdentifierGenerator`).
+- Established Riverpod dependency injection root in `presentation/providers`.
+- Implemented `FundsListNotifier` and `FundDetailNotifier` as pure wiring layers.
+- Pinned `flutter_riverpod ^3.4.2`, `go_router ^17.3.0`.
+
 ### Added
 - Phase 1: Pure Dart financial domain foundation.
 - Money and Currency models with strict integer minor-unit arithmetic and half-even rounding.

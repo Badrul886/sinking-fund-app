@@ -351,5 +351,35 @@ void main() {
       expect(txs[4].id, 't2');
       expect(txs[5].id, 't3'); // d2
     });
+
+    test('Atomic rollback when saveFund with transaction fails', () async {
+      // Create a fund and transaction that should be saved together
+      final fund = createTestFund('rollback-1', usd);
+
+      // Introduce an invalid transaction (e.g., currency mismatch, which throws ConstraintViolation)
+      final invalidTx = Contribution(
+        id: 'tx-1',
+        amount: const Money(
+          minorUnits: 1000,
+          currency: bdt,
+        ), // Mismatch with USD
+        date: CalendarDate(2023, 2, 1),
+      );
+
+      try {
+        await repository.saveFund(fund, transaction: invalidTx);
+        fail('Should have thrown an exception');
+      } catch (e) {
+        expect(e, isA<ConstraintViolationException>());
+      }
+
+      // Verify complete rollback: neither the fund nor the transaction should exist
+      final savedFund = await repository.getFund('rollback-1');
+      expect(savedFund, isNull);
+
+      final allTxs = await db.select(db.transactions).get();
+      final hasTx1 = allTxs.any((t) => t.id == 'tx-1');
+      expect(hasTx1, isFalse);
+    });
   });
 }

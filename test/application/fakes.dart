@@ -11,13 +11,16 @@ class FakeFundRepository implements FundRepository {
   bool throwOnSave = false;
 
   @override
-  Future<void> saveFund(Fund fund) async {
+  Future<void> saveFund(Fund fund, {Transaction? transaction}) async {
     if (throwOnSave) {
       throw const ConstraintViolationException('Mock constraint error');
     }
     funds[fund.id] = fund;
     if (!transactions.containsKey(fund.id)) {
       transactions[fund.id] = [];
+    }
+    if (transaction != null) {
+      transactions[fund.id]!.add(transaction);
     }
   }
 

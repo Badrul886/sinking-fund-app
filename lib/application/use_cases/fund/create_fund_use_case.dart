@@ -2,6 +2,7 @@ import '../../../domain/fund.dart';
 import '../../../domain/money.dart';
 import '../../../domain/calendar_date.dart';
 import '../../../domain/schedule.dart';
+import '../../../domain/transaction.dart';
 import '../../../domain/repositories/fund_repository.dart';
 import '../../../domain/exceptions.dart';
 import '../../../data/exceptions.dart';
@@ -21,8 +22,17 @@ class CreateFundUseCase {
     required CalendarDate startDate,
     required CalendarDate targetDate,
     required ContributionFrequency contributionFrequency,
+    Money? initialSavings,
   }) async {
     try {
+      if (initialSavings != null && initialSavings.minorUnits > 0) {
+        if (initialSavings.currency.code != targetAmount.currency.code) {
+          throw ValidationException(
+            'initialSavings currency must match targetAmount currency',
+          );
+        }
+      }
+
       final fundId = id ?? _identifierGenerator.generate();
 
       final fund = Fund(
@@ -34,7 +44,17 @@ class CreateFundUseCase {
         contributionFrequency: contributionFrequency,
       );
 
-      await _repository.saveFund(fund);
+      Transaction? initialTransaction;
+      if (initialSavings != null && initialSavings.minorUnits > 0) {
+        initialTransaction = Contribution(
+          id: _identifierGenerator.generate(),
+          amount: initialSavings,
+          date: startDate,
+          note: 'Initial savings',
+        );
+      }
+
+      await _repository.saveFund(fund, transaction: initialTransaction);
       return fund;
     } on ValidationException catch (e) {
       throw InvalidFundDataError(e.message);

@@ -19,7 +19,7 @@ class MockFundRepository implements FundRepository {
   Future<Fund?> getFund(String id) async => _funds[id];
 
   @override
-  Future<void> saveFund(Fund fund) async {
+  Future<void> saveFund(Fund fund, {Transaction? transaction}) async {
     _funds[fund.id] = fund;
   }
 

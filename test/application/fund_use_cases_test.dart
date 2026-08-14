@@ -8,6 +8,7 @@ import 'package:sinking_fund/domain/money.dart';
 import 'package:sinking_fund/domain/currency.dart';
 import 'package:sinking_fund/domain/calendar_date.dart';
 import 'package:sinking_fund/domain/schedule.dart';
+import 'package:sinking_fund/domain/transaction.dart';
 import 'package:sinking_fund/domain/fund_calculator.dart';
 
 import 'fakes.dart';
@@ -51,7 +52,77 @@ void main() {
 
       final savedFund = await repository.getFund('generated-id-1');
       expect(savedFund, isNotNull);
+
+      final txs = await repository.getTransactionsForFund('generated-id-1');
+      expect(txs, isEmpty); // initialSavings = 0 (omitted) -> no transaction
     });
+
+    test(
+      'successfully creates a fund with initialSavings > 0 (creates Contribution)',
+      () async {
+        idGen.idToGenerate = 'generated-id-2';
+        final target = Money(minorUnits: 100000, currency: Currency('USD'));
+        final start = CalendarDate(2026, 1, 1);
+        final end = CalendarDate(2026, 12, 31);
+        final schedule = ContributionFrequency.monthly;
+        final initialSavings = Money(
+          minorUnits: 50000,
+          currency: Currency('USD'),
+        );
+
+        final fund = await createFundUseCase.execute(
+          name: 'Car',
+          targetAmount: target,
+          startDate: start,
+          targetDate: end,
+          contributionFrequency: schedule,
+          initialSavings: initialSavings,
+        );
+
+        expect(fund.id, 'generated-id-2');
+        final savedFund = await repository.getFund('generated-id-2');
+        expect(savedFund, isNotNull);
+
+        final txs = await repository.getTransactionsForFund('generated-id-2');
+        expect(txs.length, 1);
+        expect(txs.first, isA<Contribution>());
+        expect(txs.first.amount, initialSavings);
+      },
+    );
+
+    test(
+      'successfully creates a fund with initialSavings > target (OVERFUNDED)',
+      () async {
+        idGen.idToGenerate = 'generated-id-3';
+        final target = Money(minorUnits: 100000, currency: Currency('USD'));
+        final start = CalendarDate(2026, 1, 1);
+        final end = CalendarDate(2026, 12, 31);
+        final schedule = ContributionFrequency.monthly;
+        final initialSavings = Money(
+          minorUnits: 150000,
+          currency: Currency('USD'),
+        );
+
+        await createFundUseCase.execute(
+          name: 'Overfunded',
+          targetAmount: target,
+          startDate: start,
+          targetDate: end,
+          contributionFrequency: schedule,
+          initialSavings: initialSavings,
+        );
+
+        final txs = await repository.getTransactionsForFund('generated-id-3');
+        expect(txs.length, 1);
+        expect(txs.first.amount, initialSavings);
+
+        final state = await getFundUseCase.execute(
+          'generated-id-3',
+          CalendarDate(2026, 1, 1),
+        );
+        expect(state.calculationResult.status, FundStatus.overfunded);
+      },
+    );
 
     test('preserves supplied ID', () async {
       final target = Money(minorUnits: 100000, currency: Currency('USD'));

@@ -8,6 +8,7 @@ import '../../domain/schedule.dart';
 import '../../domain/repositories/fund_repository.dart';
 import '../local/database/app_database.dart';
 import '../exceptions.dart';
+import '../local/database/fund_insertion_helper.dart';
 
 class FundRepositoryImpl implements FundRepository {
   final AppDatabase _db;
@@ -15,23 +16,13 @@ class FundRepositoryImpl implements FundRepository {
   FundRepositoryImpl(this._db);
 
   @override
-  Future<void> saveFund(Fund fund) async {
+  Future<void> saveFund(Fund fund, {Transaction? transaction}) async {
     try {
-      await _db
-          .into(_db.funds)
-          .insert(
-            FundsCompanion.insert(
-              id: fund.id,
-              name: fund.name,
-              targetMinorUnits: fund.targetAmount.minorUnits,
-              currencyCode: fund.targetAmount.currency.code,
-              startDate: fund.startDate.toString(),
-              targetDate: fund.targetDate.toString(),
-              contributionFrequency: fund.contributionFrequency.index,
-            ),
-            mode: InsertMode.insertOrReplace,
-          );
+      await _db.transaction(() async {
+        await _db.insertFundAndTransaction(fund, transaction: transaction);
+      });
     } catch (e) {
+      if (e is DataException) rethrow;
       throw DatabaseFailureException(e.toString());
     }
   }

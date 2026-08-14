@@ -6,7 +6,16 @@
 Sinking Fund Mobile Application
 
 ## Current phase
-`PHASE_2_DATA_PERSISTENCE`
+`PHASE_3_APPLICATION_LAYER`
+
+## Phase 2 status
+COMPLETE AND COMMITTED
+
+Actual Phase 2 achievements:
+- Implemented local data persistence with Drift SQLite
+- Created AppDatabase and schema
+- Implemented FundRepositoryImpl with DTO mapping
+- 100% test pass rate for repository round-trips
 
 ## Phase 1 status
 COMPLETE AND COMMITTED
@@ -44,11 +53,14 @@ Actual Phase 0 achievements:
 - Git Phase 0 checkpoint created
 
 ## Current state
-The pure Dart financial domain foundation is complete, tested, and committed.
-The next active phase is local-first Data Persistence using Drift/SQLite.
+- Pure Dart financial domain is complete and tested.
+- Drift/SQLite local persistence is complete and tested.
+- Repository/data boundary is established.
+- The repository is clean and synchronized with origin/main.
+- The next active work is Application Layer planning.
 
 ## Active work
-PHASE 2 — DATA PERSISTENCE PLANNING
+PHASE 3 — APPLICATION LAYER PLANNING
 
 ## Blocked / unresolved
 None.
@@ -60,7 +72,7 @@ None.
 See `docs/DECISIONS.md`.
 
 ## Next action
-Produce and review the Phase 2 implementation plan before coding.
+Produce and review the Phase 3 Application Layer implementation plan before coding.
 
 ## Last updated
 2026-08-14

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/onboarding_state_provider.dart';
+import '../screens/onboarding/onboarding_screen.dart';
 
 // Placeholder screen to prove routing without building the real UI (Phase 5C)
 class PlaceholderScreen extends StatelessWidget {
@@ -64,7 +65,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const PlaceholderScreen(title: 'Onboarding'),
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         path: '/fund/create',

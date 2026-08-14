@@ -19,8 +19,11 @@ void main() {
       currentDate: CalendarDate(2025, 1, 1),
     );
 
-    expect(result.requiredContribution.minorUnits, 1000); // 12000 / 12 periods
-    expect(result.currentBalance.minorUnits, 0);
+    expect(
+      result.calculationResult.requiredContribution.minorUnits,
+      1000,
+    ); // 12000 / 12 periods
+    expect(result.calculationResult.currentBalance.minorUnits, 0);
   });
 
   test('Calculates required contribution with initial savings', () {
@@ -33,8 +36,11 @@ void main() {
       currentDate: CalendarDate(2025, 1, 1),
     );
 
-    expect(result.requiredContribution.minorUnits, 500); // (12000 - 6000) / 12
-    expect(result.currentBalance.minorUnits, 6000);
+    expect(
+      result.calculationResult.requiredContribution.minorUnits,
+      500,
+    ); // (12000 - 6000) / 12
+    expect(result.calculationResult.currentBalance.minorUnits, 6000);
   });
 
   test('Target reached with initial savings', () {
@@ -47,6 +53,6 @@ void main() {
       currentDate: CalendarDate(2025, 1, 1),
     );
 
-    expect(result.requiredContribution.minorUnits, 0);
+    expect(result.calculationResult.requiredContribution.minorUnits, 0);
   });
 }

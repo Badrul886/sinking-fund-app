@@ -22,9 +22,7 @@ class GoldenTestWrapper extends StatelessWidget {
       home: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: Center(
-            child: child,
-          ),
+          child: Center(child: child),
         ),
       ),
     );
@@ -36,13 +34,10 @@ void main() {
     testWidgets('PrimaryActionButton matches golden', (tester) async {
       await tester.pumpWidget(
         GoldenTestWrapper(
-          child: PrimaryActionButton(
-            label: 'Save Fund',
-            onPressed: () {},
-          ),
+          child: PrimaryActionButton(label: 'Save Fund', onPressed: () {}),
         ),
       );
-      
+
       await expectLater(
         find.byType(GoldenTestWrapper),
         matchesGoldenFile('primary_action_button.png'),
@@ -52,13 +47,10 @@ void main() {
     testWidgets('SecondaryActionButton matches golden', (tester) async {
       await tester.pumpWidget(
         GoldenTestWrapper(
-          child: SecondaryActionButton(
-            label: 'Cancel',
-            onPressed: () {},
-          ),
+          child: SecondaryActionButton(label: 'Cancel', onPressed: () {}),
         ),
       );
-      
+
       await expectLater(
         find.byType(GoldenTestWrapper),
         matchesGoldenFile('secondary_action_button.png'),
@@ -72,12 +64,18 @@ void main() {
             width: 300,
             height: 150,
             child: AppCard(
-              child: Center(child: Text('Card Content')),
+              child: Center(
+                child: SizedBox(
+                  width: 100,
+                  height: 50,
+                  child: ColoredBox(color: Colors.blue),
+                ),
+              ),
             ),
           ),
         ),
       );
-      
+
       await expectLater(
         find.byType(GoldenTestWrapper),
         matchesGoldenFile('app_card.png'),
@@ -90,13 +88,10 @@ void main() {
 
       await tester.pumpWidget(
         GoldenTestWrapper(
-          child: AmountDisplay(
-            amount: amount, 
-            locale: 'en_US',
-          ),
+          child: AmountDisplay(amount: amount, locale: 'en_US'),
         ),
       );
-      
+
       await expectLater(
         find.byType(GoldenTestWrapper),
         matchesGoldenFile('amount_display_usd.png'),
@@ -112,7 +107,7 @@ void main() {
           ),
         ),
       );
-      
+
       // Allow animation to finish
       await tester.pumpAndSettle();
 
@@ -122,7 +117,9 @@ void main() {
       );
     });
 
-    testWidgets('ProgressVisualizer matches golden (Overfunded)', (tester) async {
+    testWidgets('ProgressVisualizer matches golden (Overfunded)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const GoldenTestWrapper(
           child: SizedBox(
@@ -131,7 +128,7 @@ void main() {
           ),
         ),
       );
-      
+
       // Allow animation to finish
       await tester.pumpAndSettle();
 

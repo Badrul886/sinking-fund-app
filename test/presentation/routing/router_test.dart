@@ -38,7 +38,7 @@ void main() {
       // Wait for future provider to resolve
       await tester.pumpAndSettle();
 
-      expect(find.text('Onboarding'), findsWidgets);
+      expect(find.text('Get Started'), findsWidgets);
       expect(find.text('Dashboard'), findsNothing);
     });
 
@@ -65,7 +65,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Dashboard'), findsWidgets);
-      expect(find.text('Onboarding'), findsNothing);
+      expect(find.text('Get Started'), findsNothing);
     });
   });
 }

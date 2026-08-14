@@ -15,7 +15,10 @@ import '../../data/repositories/settings_repository_impl.dart';
 import '../../application/ports/onboarding_settings_repository.dart';
 import '../../application/use_cases/onboarding/get_onboarding_status_use_case.dart';
 import '../../application/use_cases/onboarding/complete_onboarding_use_case.dart';
-
+import '../../application/ports/onboarding_repository.dart';
+import '../../data/repositories/onboarding_repository_impl.dart';
+import '../../application/use_cases/onboarding/complete_initial_onboarding_use_case.dart';
+import '../../application/use_cases/fund/calculate_fund_preview_use_case.dart';
 // Database Provider
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -79,4 +82,21 @@ final getOnboardingStatusUseCaseProvider = Provider<GetOnboardingStatusUseCase>(
 
 final completeOnboardingUseCaseProvider = Provider<CompleteOnboardingUseCase>((ref) {
   return CompleteOnboardingUseCase(ref.watch(onboardingSettingsRepositoryProvider));
+});
+
+// New Onboarding Repository and Use Case
+final onboardingRepositoryProvider = Provider<OnboardingRepository>((ref) {
+  return OnboardingRepositoryImpl(ref.watch(databaseProvider));
+});
+
+final completeInitialOnboardingUseCaseProvider = Provider<CompleteInitialOnboardingUseCase>((ref) {
+  return CompleteInitialOnboardingUseCase(
+    ref.watch(clockProvider),
+    ref.watch(onboardingRepositoryProvider),
+    ref.watch(identifierGeneratorProvider),
+  );
+});
+
+final calculateFundPreviewUseCaseProvider = Provider<CalculateFundPreviewUseCase>((ref) {
+  return CalculateFundPreviewUseCase();
 });

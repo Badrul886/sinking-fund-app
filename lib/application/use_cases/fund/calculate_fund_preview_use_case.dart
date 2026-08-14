@@ -4,11 +4,13 @@ import '../../../domain/calendar_date.dart';
 import '../../../domain/schedule.dart';
 import '../../../domain/transaction.dart';
 import '../../../domain/fund_calculator.dart';
+import '../../../domain/trajectory_calculator.dart';
+import '../../models/fund_preview.dart';
 
 class CalculateFundPreviewUseCase {
   const CalculateFundPreviewUseCase();
 
-  FundCalculationResult execute({
+  FundPreview execute({
     required Money targetAmount,
     required CalendarDate startDate,
     required CalendarDate targetDate,
@@ -45,10 +47,21 @@ class CalculateFundPreviewUseCase {
       );
     }
 
-    return FundCalculator.calculate(
+    final calculationResult = FundCalculator.calculate(
       fund: previewFund,
       currentDate: currentDate,
       transactions: transactions,
+    );
+
+    final trajectory = TrajectoryCalculator.calculate(
+      fund: previewFund,
+      transactions: transactions,
+      currentDate: currentDate,
+    );
+
+    return FundPreview(
+      calculationResult: calculationResult,
+      trajectory: trajectory,
     );
   }
 }

@@ -41,4 +41,21 @@ class Fund {
     startDate: startDate,
     frequency: contributionFrequency,
   );
+
+  Fund copyWith({
+    String? name,
+    Money? targetAmount,
+    CalendarDate? targetDate,
+    ContributionFrequency? contributionFrequency,
+  }) {
+    return Fund(
+      id: id,
+      name: name ?? this.name,
+      targetAmount: targetAmount ?? this.targetAmount,
+      startDate: startDate,
+      targetDate: targetDate ?? this.targetDate,
+      contributionFrequency:
+          contributionFrequency ?? this.contributionFrequency,
+    );
+  }
 }

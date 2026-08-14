@@ -11,7 +11,6 @@ import 'package:sinking_fund/domain/calendar_date.dart';
 import 'package:sinking_fund/domain/money.dart';
 import 'package:sinking_fund/domain/currency.dart';
 import 'package:sinking_fund/domain/schedule.dart';
-import 'package:sinking_fund/application/models/fund_state.dart';
 
 class FakeClock implements Clock {
   final CalendarDate fakeDate;

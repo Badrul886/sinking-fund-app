@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sinking_fund/core/platform/system_clock.dart';
+
 void main() {
   group('SystemClock', () {
     test('today() returns current local date', () {

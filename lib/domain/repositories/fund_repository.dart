@@ -3,6 +3,7 @@ import '../transaction.dart';
 
 abstract class FundRepository {
   Future<void> saveFund(Fund fund);
+  Future<void> updateFund(Fund fund);
   Future<Fund?> getFund(String id);
   Future<List<Fund>> getAllFunds();
   Future<void> deleteFund(String id);

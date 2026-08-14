@@ -8,6 +8,7 @@ class Transactions extends Table {
       text().references(Funds, #id, onDelete: KeyAction.cascade)();
   IntColumn get amountMinorUnits => integer()();
   TextColumn get date => text()();
+  TextColumn get note => text().nullable()();
   IntColumn get type => integer()(); // 0: contribution, 1: withdrawal
   IntColumn get createdAt => integer()();
 

@@ -381,3 +381,26 @@ This prevents the Presentation layer from needing to know about Drift-specific o
 ### Related files
 - `lib/application/errors/application_error.dart`
 
+---
+
+## Phase 5A: Architectural Prerequisites
+
+**Date:** 2026-08-14
+**Status:** Accepted
+
+### Context
+Before building the Presentation (UI) layer, specific infrastructure and architectural enhancements were needed to support onboarding, fund editing, detailed progress visualization (trajectories), and optional transaction notes.
+
+### Decision
+1. **Schema v2:** Performed a strict Drift migration to version 2, adding the `AppSettings` table and a nullable `transactions.note` column, ensuring default backward compatibility for existing records.
+2. **Onboarding Boundaries:** Created `OnboardingSettingsRepository` in Application, decoupling the onboarding UI from the Data layer.
+3. **Domain Extensibility:** Extended `Transaction` with `note`. Created `UpdateFundUseCase` which strictly validates changes and rejects currency mutations. 
+4. **Trajectory & Preview:** Built `TrajectoryCalculator` in Domain to generate historical/future points without replicating financial math. Created `CalculateFundPreviewUseCase` in Application to decouple UI preview generation from `Fund` entity instantiation.
+
+### Rationale
+Strictly enforcing these boundaries inside Domain and Application layers ensures the UI (Phase 5B) remains a dumb consumer of state.
+
+### Consequences
+- Prevents UI from injecting persistence or calculation bugs.
+- Requires robust `v1 -> v2` schema migration tests to ensure data integrity.
+

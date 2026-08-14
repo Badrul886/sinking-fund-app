@@ -37,5 +37,25 @@ void main() {
         throwsA(isA<ValidationException>()),
       );
     });
+
+    test('valid contribution with optional note', () {
+      final c = Contribution(
+        id: 't4',
+        amount: const Money(minorUnits: 100, currency: usd),
+        date: date,
+        note: 'Bonus',
+      );
+      expect(c.note, 'Bonus');
+    });
+
+    test('valid withdrawal with optional note', () {
+      final w = Withdrawal(
+        id: 't5',
+        amount: const Money(minorUnits: 50, currency: usd),
+        date: date,
+        note: 'Emergency',
+      );
+      expect(w.note, 'Emergency');
+    });
   });
 }

@@ -22,6 +22,14 @@ class FakeFundRepository implements FundRepository {
   }
 
   @override
+  Future<void> updateFund(Fund fund) async {
+    if (throwOnSave) {
+      throw const ConstraintViolationException('Mock constraint error');
+    }
+    funds[fund.id] = fund;
+  }
+
+  @override
   Future<Fund?> getFund(String id) async {
     return funds[id];
   }

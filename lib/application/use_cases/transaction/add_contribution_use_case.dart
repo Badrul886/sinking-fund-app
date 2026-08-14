@@ -25,6 +25,7 @@ class AddContributionUseCase {
     required Money amount,
     required CalendarDate date,
     required CalendarDate currentDate,
+    String? note,
   }) async {
     try {
       // 1. Retrieve the target Fund state.
@@ -44,6 +45,7 @@ class AddContributionUseCase {
         id: _identifierGenerator.generate(),
         amount: amount,
         date: date,
+        note: note,
       );
 
       // 4. Persist transaction.

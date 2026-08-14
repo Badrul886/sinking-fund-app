@@ -6,6 +6,12 @@
 - Persistent Antigravity handoff system.
 - Repository-level product/engineering governance documents.
 - Phase 0 Architectural Plan for Flutter (including Hybrid structure and Money domain model).
+- Phase 5A Architectural Prerequisites:
+  - AppSettings persistence and `v2` schema migration
+  - `Transaction.note` support
+  - `OnboardingSettingsRepository` and `CalculateFundPreviewUseCase`
+  - `UpdateFundUseCase`
+  - `TrajectoryCalculator` for historical/future visualization points
 
 ### Changed
 - Pivoted core framework choice from React Native/Expo to Flutter.
@@ -14,7 +20,7 @@
 - Migrated Android build-tool architecture from legacy KGP to AGP 9 Built-in Kotlin to resolve compatibility with Java 25.
 
 ### Fixed
-None.
+- Replaced basic smoke test for schema migration with a robust `v1 -> v2` path test simulating real data.
 
 ### Known issues
 None.

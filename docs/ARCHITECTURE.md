@@ -4,6 +4,9 @@
 Riverpod is strictly used for dependency injection and presentation logic wiring.
 * **Dependencies:** `lib/presentation/providers/dependencies.dart` contains providers for infrastructure components (Repositories, Clock, IdentifierGenerator) and Use Cases.
 * **State Management:** Riverpod `AsyncNotifier` is used to expose Domain state (e.g. `FundState`) to the UI.
+* **Phase 5A Pre-requisites:**
+  * Application provides decoupled use cases for previewing funds (`CalculateFundPreviewUseCase`) and onboarding status (`OnboardingSettingsRepository`), ensuring UI doesn't instantiate Domain objects.
+  * Trajectory calculations (`TrajectoryCalculator`) are explicitly part of the Domain, providing read-only projections.
 * **Rules:**
   * Riverpod notifiers **MUST NOT** contain core business logic (calculating progress, balancing amounts). They delegate entirely to Application Use Cases.
   * We use manual provider definitions, specifically preferring `AsyncNotifier` combined with constructor-based arguments for family providers.

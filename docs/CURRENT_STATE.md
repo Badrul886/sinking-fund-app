@@ -6,9 +6,13 @@
 Sinking Fund Mobile Application
 
 ## Current phase
-- Created AppDatabase and schema
-- Implemented FundRepositoryImpl with DTO mapping
-- 100% test pass rate for repository round-trips
+- Implemented AppSettings persistence and v2 schema migration
+- Added Transaction.note support
+- Added OnboardingSettingsRepository and UseCases
+- Implemented UpdateFundUseCase for non-financial modifications
+- Implemented TrajectoryCalculator for historical/future points
+- Implemented CalculateFundPreviewUseCase for onboarding
+- Validated via real v1->v2 migration test and unit tests
 
 ## Phase 3 status
 COMPLETE (Pending Commit)
@@ -63,15 +67,31 @@ Actual Phase 0 achievements:
 - debug APK build passed
 - Git Phase 0 checkpoint created
 
+## Phase 4 status
+COMPLETE AND COMMITTED
+
+Actual Phase 4 achievements:
+- Created infrastructure ports and adapters (`SystemClock`, `SecureRandomIdentifierGenerator`).
+- Established Riverpod dependency injection root.
+- Implemented `FundsListNotifier` and `FundDetailNotifier` as pure wiring layers.
+
+## Phase 5A status
+COMPLETE AND READY FOR GIT CHECKPOINT
+
+Actual Phase 5A achievements:
+- Added AppSettings persistence and schema v2 migration
+- Added Transaction.note
+- Added OnboardingSettingsRepository
+- Added UpdateFundUseCase
+- Added TrajectoryCalculator
+- Added CalculateFundPreviewUseCase
+
 ## Current state
-- Pure Dart financial domain is complete and tested.
-- Drift/SQLite local persistence is complete and tested.
-- Application Layer orchestrates use cases with strict boundaries.
-- Repository is clean (pending Phase 3 commit).
-- The next active work is Phase 4 Composition & Wiring.
+- Phase 5A architectural prerequisites are complete.
+- The next active work is Phase 5B Presentation & UI.
 
 ## Active work
-PHASE 4 — COMPOSITION AND WIRING
+PHASE 5B — PRESENTATION AND UI
 
 ## Blocked / unresolved
 None.
@@ -83,7 +103,7 @@ None.
 See `docs/DECISIONS.md`.
 
 ## Next action
-Review/Implement Phase 4 Composition and Wiring.
+Review/Implement Phase 5B Presentation and UI.
 
 ## Last updated
 2026-08-14

@@ -533,6 +533,15 @@ class $TransactionsTable extends Transactions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<int> type = GeneratedColumn<int>(
@@ -559,6 +568,7 @@ class $TransactionsTable extends Transactions
     fundId,
     amountMinorUnits,
     date,
+    note,
     type,
     createdAt,
   ];
@@ -606,6 +616,12 @@ class $TransactionsTable extends Transactions
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
     if (data.containsKey('type')) {
       context.handle(
         _typeMeta,
@@ -647,6 +663,10 @@ class $TransactionsTable extends Transactions
         DriftSqlType.string,
         data['${effectivePrefix}date'],
       )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
       type: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}type'],
@@ -669,6 +689,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
   final String fundId;
   final int amountMinorUnits;
   final String date;
+  final String? note;
   final int type;
   final int createdAt;
   const TransactionData({
@@ -676,6 +697,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     required this.fundId,
     required this.amountMinorUnits,
     required this.date,
+    this.note,
     required this.type,
     required this.createdAt,
   });
@@ -686,6 +708,9 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     map['fund_id'] = Variable<String>(fundId);
     map['amount_minor_units'] = Variable<int>(amountMinorUnits);
     map['date'] = Variable<String>(date);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
     map['type'] = Variable<int>(type);
     map['created_at'] = Variable<int>(createdAt);
     return map;
@@ -697,6 +722,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
       fundId: Value(fundId),
       amountMinorUnits: Value(amountMinorUnits),
       date: Value(date),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
       type: Value(type),
       createdAt: Value(createdAt),
     );
@@ -712,6 +738,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
       fundId: serializer.fromJson<String>(json['fundId']),
       amountMinorUnits: serializer.fromJson<int>(json['amountMinorUnits']),
       date: serializer.fromJson<String>(json['date']),
+      note: serializer.fromJson<String?>(json['note']),
       type: serializer.fromJson<int>(json['type']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
     );
@@ -724,6 +751,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
       'fundId': serializer.toJson<String>(fundId),
       'amountMinorUnits': serializer.toJson<int>(amountMinorUnits),
       'date': serializer.toJson<String>(date),
+      'note': serializer.toJson<String?>(note),
       'type': serializer.toJson<int>(type),
       'createdAt': serializer.toJson<int>(createdAt),
     };
@@ -734,6 +762,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     String? fundId,
     int? amountMinorUnits,
     String? date,
+    Value<String?> note = const Value.absent(),
     int? type,
     int? createdAt,
   }) => TransactionData(
@@ -741,6 +770,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     fundId: fundId ?? this.fundId,
     amountMinorUnits: amountMinorUnits ?? this.amountMinorUnits,
     date: date ?? this.date,
+    note: note.present ? note.value : this.note,
     type: type ?? this.type,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -752,6 +782,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
           ? data.amountMinorUnits.value
           : this.amountMinorUnits,
       date: data.date.present ? data.date.value : this.date,
+      note: data.note.present ? data.note.value : this.note,
       type: data.type.present ? data.type.value : this.type,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -764,6 +795,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
           ..write('fundId: $fundId, ')
           ..write('amountMinorUnits: $amountMinorUnits, ')
           ..write('date: $date, ')
+          ..write('note: $note, ')
           ..write('type: $type, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -772,7 +804,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
 
   @override
   int get hashCode =>
-      Object.hash(id, fundId, amountMinorUnits, date, type, createdAt);
+      Object.hash(id, fundId, amountMinorUnits, date, note, type, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -781,6 +813,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
           other.fundId == this.fundId &&
           other.amountMinorUnits == this.amountMinorUnits &&
           other.date == this.date &&
+          other.note == this.note &&
           other.type == this.type &&
           other.createdAt == this.createdAt);
 }
@@ -790,6 +823,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
   final Value<String> fundId;
   final Value<int> amountMinorUnits;
   final Value<String> date;
+  final Value<String?> note;
   final Value<int> type;
   final Value<int> createdAt;
   final Value<int> rowid;
@@ -798,6 +832,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     this.fundId = const Value.absent(),
     this.amountMinorUnits = const Value.absent(),
     this.date = const Value.absent(),
+    this.note = const Value.absent(),
     this.type = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -807,6 +842,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     required String fundId,
     required int amountMinorUnits,
     required String date,
+    this.note = const Value.absent(),
     required int type,
     required int createdAt,
     this.rowid = const Value.absent(),
@@ -821,6 +857,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     Expression<String>? fundId,
     Expression<int>? amountMinorUnits,
     Expression<String>? date,
+    Expression<String>? note,
     Expression<int>? type,
     Expression<int>? createdAt,
     Expression<int>? rowid,
@@ -830,6 +867,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
       if (fundId != null) 'fund_id': fundId,
       if (amountMinorUnits != null) 'amount_minor_units': amountMinorUnits,
       if (date != null) 'date': date,
+      if (note != null) 'note': note,
       if (type != null) 'type': type,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -841,6 +879,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     Value<String>? fundId,
     Value<int>? amountMinorUnits,
     Value<String>? date,
+    Value<String?>? note,
     Value<int>? type,
     Value<int>? createdAt,
     Value<int>? rowid,
@@ -850,6 +889,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
       fundId: fundId ?? this.fundId,
       amountMinorUnits: amountMinorUnits ?? this.amountMinorUnits,
       date: date ?? this.date,
+      note: note ?? this.note,
       type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -871,6 +911,9 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     if (date.present) {
       map['date'] = Variable<String>(date.value);
     }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
     if (type.present) {
       map['type'] = Variable<int>(type.value);
     }
@@ -890,8 +933,217 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
           ..write('fundId: $fundId, ')
           ..write('amountMinorUnits: $amountMinorUnits, ')
           ..write('date: $date, ')
+          ..write('note: $note, ')
           ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AppSettingsTable extends AppSettings
+    with TableInfo<$AppSettingsTable, AppSettingData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [key, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AppSettingData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  AppSettingData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppSettingData(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $AppSettingsTable createAlias(String alias) {
+    return $AppSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class AppSettingData extends DataClass implements Insertable<AppSettingData> {
+  final String key;
+  final String value;
+  const AppSettingData({required this.key, required this.value});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['value'] = Variable<String>(value);
+    return map;
+  }
+
+  AppSettingsCompanion toCompanion(bool nullToAbsent) {
+    return AppSettingsCompanion(key: Value(key), value: Value(value));
+  }
+
+  factory AppSettingData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AppSettingData(
+      key: serializer.fromJson<String>(json['key']),
+      value: serializer.fromJson<String>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'value': serializer.toJson<String>(value),
+    };
+  }
+
+  AppSettingData copyWith({String? key, String? value}) =>
+      AppSettingData(key: key ?? this.key, value: value ?? this.value);
+  AppSettingData copyWithCompanion(AppSettingsCompanion data) {
+    return AppSettingData(
+      key: data.key.present ? data.key.value : this.key,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSettingData(')
+          ..write('key: $key, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(key, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppSettingData &&
+          other.key == this.key &&
+          other.value == this.value);
+}
+
+class AppSettingsCompanion extends UpdateCompanion<AppSettingData> {
+  final Value<String> key;
+  final Value<String> value;
+  final Value<int> rowid;
+  const AppSettingsCompanion({
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppSettingsCompanion.insert({
+    required String key,
+    required String value,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       value = Value(value);
+  static Insertable<AppSettingData> custom({
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppSettingsCompanion copyWith({
+    Value<String>? key,
+    Value<String>? value,
+    Value<int>? rowid,
+  }) {
+    return AppSettingsCompanion(
+      key: key ?? this.key,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSettingsCompanion(')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -903,11 +1155,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $FundsTable funds = $FundsTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
+  late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [funds, transactions];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    funds,
+    transactions,
+    appSettings,
+  ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
     WritePropagation(
@@ -1269,6 +1526,7 @@ typedef $$TransactionsTableCreateCompanionBuilder =
       required String fundId,
       required int amountMinorUnits,
       required String date,
+      Value<String?> note,
       required int type,
       required int createdAt,
       Value<int> rowid,
@@ -1279,6 +1537,7 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
       Value<String> fundId,
       Value<int> amountMinorUnits,
       Value<String> date,
+      Value<String?> note,
       Value<int> type,
       Value<int> createdAt,
       Value<int> rowid,
@@ -1327,6 +1586,11 @@ class $$TransactionsTableFilterComposer
 
   ColumnFilters<String> get date => $composableBuilder(
     column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1388,6 +1652,11 @@ class $$TransactionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get type => $composableBuilder(
     column: $table.type,
     builder: (column) => ColumnOrderings(column),
@@ -1441,6 +1710,9 @@ class $$TransactionsTableAnnotationComposer
 
   GeneratedColumn<String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
 
   GeneratedColumn<int> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
@@ -1504,6 +1776,7 @@ class $$TransactionsTableTableManager
                 Value<String> fundId = const Value.absent(),
                 Value<int> amountMinorUnits = const Value.absent(),
                 Value<String> date = const Value.absent(),
+                Value<String?> note = const Value.absent(),
                 Value<int> type = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -1512,6 +1785,7 @@ class $$TransactionsTableTableManager
                 fundId: fundId,
                 amountMinorUnits: amountMinorUnits,
                 date: date,
+                note: note,
                 type: type,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -1522,6 +1796,7 @@ class $$TransactionsTableTableManager
                 required String fundId,
                 required int amountMinorUnits,
                 required String date,
+                Value<String?> note = const Value.absent(),
                 required int type,
                 required int createdAt,
                 Value<int> rowid = const Value.absent(),
@@ -1530,6 +1805,7 @@ class $$TransactionsTableTableManager
                 fundId: fundId,
                 amountMinorUnits: amountMinorUnits,
                 date: date,
+                note: note,
                 type: type,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -1601,6 +1877,145 @@ typedef $$TransactionsTableProcessedTableManager =
       TransactionData,
       PrefetchHooks Function({bool fundId})
     >;
+typedef $$AppSettingsTableCreateCompanionBuilder =
+    AppSettingsCompanion Function({
+      required String key,
+      required String value,
+      Value<int> rowid,
+    });
+typedef $$AppSettingsTableUpdateCompanionBuilder =
+    AppSettingsCompanion Function({
+      Value<String> key,
+      Value<String> value,
+      Value<int> rowid,
+    });
+
+class $$AppSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AppSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AppSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$AppSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AppSettingsTable,
+          AppSettingData,
+          $$AppSettingsTableFilterComposer,
+          $$AppSettingsTableOrderingComposer,
+          $$AppSettingsTableAnnotationComposer,
+          $$AppSettingsTableCreateCompanionBuilder,
+          $$AppSettingsTableUpdateCompanionBuilder,
+          (
+            AppSettingData,
+            BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingData>,
+          ),
+          AppSettingData,
+          PrefetchHooks Function()
+        > {
+  $$AppSettingsTableTableManager(_$AppDatabase db, $AppSettingsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AppSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsCompanion(key: key, value: value, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required String key,
+                required String value,
+                Value<int> rowid = const Value.absent(),
+              }) => AppSettingsCompanion.insert(
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AppSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AppSettingsTable,
+      AppSettingData,
+      $$AppSettingsTableFilterComposer,
+      $$AppSettingsTableOrderingComposer,
+      $$AppSettingsTableAnnotationComposer,
+      $$AppSettingsTableCreateCompanionBuilder,
+      $$AppSettingsTableUpdateCompanionBuilder,
+      (
+        AppSettingData,
+        BaseReferences<_$AppDatabase, $AppSettingsTable, AppSettingData>,
+      ),
+      AppSettingData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1609,4 +2024,6 @@ class $AppDatabaseManager {
       $$FundsTableTableManager(_db, _db.funds);
   $$TransactionsTableTableManager get transactions =>
       $$TransactionsTableTableManager(_db, _db.transactions);
+  $$AppSettingsTableTableManager get appSettings =>
+      $$AppSettingsTableTableManager(_db, _db.appSettings);
 }

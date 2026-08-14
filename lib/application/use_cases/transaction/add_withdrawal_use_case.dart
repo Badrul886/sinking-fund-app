@@ -25,6 +25,7 @@ class AddWithdrawalUseCase {
     required Money amount,
     required CalendarDate date,
     required CalendarDate currentDate,
+    String? note,
   }) async {
     try {
       // 1. Retrieve the target Fund state.
@@ -49,6 +50,7 @@ class AddWithdrawalUseCase {
         id: _identifierGenerator.generate(),
         amount: amount,
         date: date,
+        note: note,
       );
 
       // 5. Persist transaction.

@@ -37,6 +37,36 @@ class FundRepositoryImpl implements FundRepository {
   }
 
   @override
+  Future<void> updateFund(Fund fund) async {
+    try {
+      final existingFundRow = await (_db.select(
+        _db.funds,
+      )..where((t) => t.id.equals(fund.id))).getSingleOrNull();
+      if (existingFundRow == null) {
+        throw RecordNotFoundException('Fund ${fund.id} not found');
+      }
+
+      await _db
+          .into(_db.funds)
+          .insert(
+            FundsCompanion.insert(
+              id: fund.id,
+              name: fund.name,
+              targetMinorUnits: fund.targetAmount.minorUnits,
+              currencyCode: fund.targetAmount.currency.code,
+              startDate: fund.startDate.toString(),
+              targetDate: fund.targetDate.toString(),
+              contributionFrequency: fund.contributionFrequency.index,
+            ),
+            mode: InsertMode.replace,
+          );
+    } catch (e) {
+      if (e is DataException) rethrow;
+      throw DatabaseFailureException(e.toString());
+    }
+  }
+
+  @override
   Future<Fund?> getFund(String id) async {
     try {
       final query = _db.select(_db.funds)..where((t) => t.id.equals(id));
@@ -93,6 +123,7 @@ class FundRepositoryImpl implements FundRepository {
               fundId: fundId,
               amountMinorUnits: transaction.amount.minorUnits,
               date: transaction.date.toString(),
+              note: Value(transaction.note),
               type: type,
               createdAt: DateTime.now().millisecondsSinceEpoch,
             ),
@@ -139,9 +170,19 @@ class FundRepositoryImpl implements FundRepository {
         );
 
         if (row.type == 0) {
-          return Contribution(id: row.id, amount: amount, date: date);
+          return Contribution(
+            id: row.id,
+            amount: amount,
+            date: date,
+            note: row.note,
+          );
         } else {
-          return Withdrawal(id: row.id, amount: amount, date: date);
+          return Withdrawal(
+            id: row.id,
+            amount: amount,
+            date: date,
+            note: row.note,
+          );
         }
       }).toList();
     } on DataException {

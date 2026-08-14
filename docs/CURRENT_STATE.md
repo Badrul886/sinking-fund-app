@@ -44,13 +44,14 @@ Actual Phase 0 achievements:
 - Git Phase 0 checkpoint created
 
 ## Current state
-The repository is now ready to begin Phase 1: Financial Domain Foundation.
+The pure Dart financial domain foundation is complete, tested, and committed.
+The next active phase is local-first Data Persistence using Drift/SQLite.
 
 ## Active work
-None. Phase 0 tasks are complete.
+PHASE 2 — DATA PERSISTENCE PLANNING
 
 ## Blocked / unresolved
-None. Waiting for explicit user approval to plan and implement Phase 1.
+None.
 
 ## Tests
 `flutter test` and `flutter analyze` passed. Debug APK build passed.
@@ -59,7 +60,7 @@ None. Waiting for explicit user approval to plan and implement Phase 1.
 See `docs/DECISIONS.md`.
 
 ## Next action
-Plan and implement Phase 1 only after explicit user approval.
+Produce and review the Phase 2 implementation plan before coding.
 
 ## Last updated
 2026-08-14

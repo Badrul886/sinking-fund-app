@@ -60,7 +60,11 @@ void main() {
       expect(r1.requiredContribution.minorUnits, 3333);
 
       // Pay month 1
-      final t1 = Contribution(r1.requiredContribution, start);
+      final t1 = Contribution(
+        id: 't1',
+        amount: r1.requiredContribution,
+        date: start,
+      );
 
       // Month 2
       final d2 = CalendarDate(2023, 2, 1);
@@ -77,7 +81,11 @@ void main() {
       ); // 6667 / 2 = 3333.5 -> 3334
 
       // Pay month 2
-      final t2 = Contribution(r2.requiredContribution, d2);
+      final t2 = Contribution(
+        id: 't2',
+        amount: r2.requiredContribution,
+        date: d2,
+      );
 
       // Month 3
       final d3 = CalendarDate(2023, 3, 1);
@@ -119,8 +127,9 @@ void main() {
       final fund = createFund(start, target, 10000);
 
       final t = Contribution(
-        const Money(minorUnits: 11000, currency: usd),
-        start,
+        id: 't1',
+        amount: const Money(minorUnits: 11000, currency: usd),
+        date: start,
       );
       final result = FundCalculator.calculate(
         fund: fund,
@@ -137,8 +146,9 @@ void main() {
       final fund = createFund(start, target, 10000);
 
       final t = Contribution(
-        const Money(minorUnits: 10000, currency: usd),
-        start,
+        id: 't1',
+        amount: const Money(minorUnits: 10000, currency: usd),
+        date: start,
       );
       final result = FundCalculator.calculate(
         fund: fund,
@@ -169,10 +179,15 @@ void main() {
       final fund = createFund(start, target, 10000);
 
       final t1 = Contribution(
-        const Money(minorUnits: 100, currency: usd),
-        start,
+        id: 't1',
+        amount: const Money(minorUnits: 100, currency: usd),
+        date: start,
       );
-      final t2 = Withdrawal(const Money(minorUnits: 200, currency: usd), start);
+      final t2 = Withdrawal(
+        id: 't2',
+        amount: const Money(minorUnits: 200, currency: usd),
+        date: start,
+      );
 
       expect(
         () => FundCalculator.calculate(
@@ -213,8 +228,9 @@ void main() {
 
       // 1 period elapsed
       final t1 = Contribution(
-        const Money(minorUnits: 3333, currency: usd),
-        start,
+        id: 't1',
+        amount: const Money(minorUnits: 3333, currency: usd),
+        date: start,
       );
       final result = FundCalculator.calculate(
         fund: fund,
@@ -232,8 +248,9 @@ void main() {
 
       // 1 period elapsed, 3333 expected, but user contributed 5000
       final t1 = Contribution(
-        const Money(minorUnits: 5000, currency: usd),
-        start,
+        id: 't1',
+        amount: const Money(minorUnits: 5000, currency: usd),
+        date: start,
       );
       final result = FundCalculator.calculate(
         fund: fund,
@@ -250,8 +267,9 @@ void main() {
       final fund = createFund(start, target, 10000);
 
       final t1 = Contribution(
-        const Money(minorUnits: 5000, currency: usd),
-        start,
+        id: 't1',
+        amount: const Money(minorUnits: 5000, currency: usd),
+        date: start,
       );
       final result = FundCalculator.calculate(
         fund: fund,
@@ -268,8 +286,9 @@ void main() {
       final fund = createFund(start, target, 0); // target=0
 
       final t1 = Contribution(
-        const Money(minorUnits: 1000, currency: usd),
-        start,
+        id: 't1',
+        amount: const Money(minorUnits: 1000, currency: usd),
+        date: start,
       );
       final result = FundCalculator.calculate(
         fund: fund,

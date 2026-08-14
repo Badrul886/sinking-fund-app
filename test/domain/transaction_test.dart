@@ -11,17 +11,29 @@ void main() {
 
   group('Transaction', () {
     test('valid contribution', () {
-      final c = Contribution(const Money(minorUnits: 100, currency: usd), date);
+      final c = Contribution(
+        id: 't1',
+        amount: const Money(minorUnits: 100, currency: usd),
+        date: date,
+      );
       expect(c.amount.minorUnits, 100);
     });
 
     test('zero or negative amount rejection', () {
       expect(
-        () => Contribution(const Money(minorUnits: 0, currency: usd), date),
+        () => Contribution(
+          id: 't2',
+          amount: const Money(minorUnits: 0, currency: usd),
+          date: date,
+        ),
         throwsA(isA<ValidationException>()),
       );
       expect(
-        () => Withdrawal(const Money(minorUnits: -10, currency: usd), date),
+        () => Withdrawal(
+          id: 't3',
+          amount: const Money(minorUnits: -10, currency: usd),
+          date: date,
+        ),
         throwsA(isA<ValidationException>()),
       );
     });

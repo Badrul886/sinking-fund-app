@@ -6,6 +6,7 @@ import '../screens/onboarding/onboarding_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/fund/create_fund_screen.dart';
 import '../screens/fund/fund_detail_screen.dart';
+import '../screens/fund/edit_fund_screen.dart';
 
 // Placeholder screen to prove routing without building the real UI (Phase 5C)
 class PlaceholderScreen extends StatelessWidget {
@@ -82,6 +83,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           final id = state.pathParameters['id']!;
           return FundDetailScreen(fundId: id);
         },
+        routes: [
+          GoRoute(
+            path: 'edit',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return EditFundScreen(fundId: id);
+            },
+          ),
+        ],
       ),
     ],
   );

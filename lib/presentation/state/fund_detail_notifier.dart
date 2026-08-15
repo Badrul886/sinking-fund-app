@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/models/fund_detail_state.dart';
 import '../../domain/money.dart';
 import '../../domain/calendar_date.dart';
+import '../../domain/schedule.dart';
 import '../providers/dependencies.dart';
 import 'funds_list_notifier.dart';
 
@@ -54,6 +55,26 @@ class FundDetailNotifier extends AsyncNotifier<FundDetailState> {
       date: date,
       currentDate: clock.today(),
       note: note,
+    );
+    // Invalidate self and list provider to refresh data
+    ref.invalidateSelf();
+    ref.invalidate(fundsListProvider);
+  }
+
+  // Mutation: Update Fund
+  Future<void> updateFund({
+    String? name,
+    Money? targetAmount,
+    CalendarDate? targetDate,
+    ContributionFrequency? contributionFrequency,
+  }) async {
+    final useCase = ref.read(updateFundUseCaseProvider);
+    await useCase.execute(
+      id: fundId,
+      name: name,
+      targetAmount: targetAmount,
+      targetDate: targetDate,
+      contributionFrequency: contributionFrequency,
     );
     // Invalidate self and list provider to refresh data
     ref.invalidateSelf();

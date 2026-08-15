@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sinking_fund/application/use_cases/fund/create_fund_use_case.dart';
 import 'package:sinking_fund/application/use_cases/fund/get_fund_use_case.dart';
 import 'package:sinking_fund/application/use_cases/fund/get_all_funds_use_case.dart';
+import 'package:sinking_fund/application/use_cases/fund/update_fund_use_case.dart';
 import 'package:sinking_fund/domain/fund.dart';
 import 'package:sinking_fund/application/errors/application_error.dart';
 import 'package:sinking_fund/domain/money.dart';
@@ -19,6 +20,7 @@ void main() {
   late CreateFundUseCase createFundUseCase;
   late GetFundUseCase getFundUseCase;
   late GetAllFundsUseCase getAllFundsUseCase;
+  late UpdateFundUseCase updateFundUseCase;
 
   setUp(() {
     repository = FakeFundRepository();
@@ -26,6 +28,7 @@ void main() {
     createFundUseCase = CreateFundUseCase(repository, idGen);
     getFundUseCase = GetFundUseCase(repository);
     getAllFundsUseCase = GetAllFundsUseCase(repository);
+    updateFundUseCase = UpdateFundUseCase(repository);
   });
 
   group('CreateFundUseCase', () {
@@ -230,6 +233,149 @@ void main() {
       expect(all.length, 2);
       expect(all[0].calculationResult, isNotNull);
       expect(all[1].calculationResult, isNotNull);
+    });
+  });
+
+  group('UpdateFundUseCase', () {
+    test(
+      'REQUIRED PERSISTENCE TEST: preserves exactly all transactions',
+      () async {
+        final target = Money(minorUnits: 100000, currency: Currency('USD'));
+        final start = CalendarDate(2026, 1, 1);
+        await createFundUseCase.execute(
+          id: 'fund-edit',
+          name: 'Original',
+          targetAmount: target,
+          startDate: start,
+          targetDate: CalendarDate(2026, 12, 31),
+          contributionFrequency: ContributionFrequency.monthly,
+        );
+
+        final t1 = Contribution(
+          id: 't1',
+          amount: Money(minorUnits: 10000, currency: Currency('USD')),
+          date: CalendarDate(2026, 1, 15),
+          note: 'note 1',
+        );
+        final t2 = Withdrawal(
+          id: 't2',
+          amount: Money(minorUnits: 5000, currency: Currency('USD')),
+          date: CalendarDate(2026, 2, 15),
+          note: 'note 2',
+        );
+
+        await repository.saveTransaction('fund-edit', t1);
+        await repository.saveTransaction('fund-edit', t2);
+
+        final beforeTxs = await repository.getTransactionsForFund('fund-edit');
+        expect(beforeTxs.length, 2);
+
+        await updateFundUseCase.execute(
+          id: 'fund-edit',
+          name: 'Updated',
+          targetAmount: Money(minorUnits: 120000, currency: Currency('USD')),
+        );
+
+        final afterTxs = await repository.getTransactionsForFund('fund-edit');
+        expect(afterTxs.length, 2);
+
+        expect(afterTxs[0].id, t1.id);
+        expect(afterTxs[0].amount, t1.amount);
+        expect(afterTxs[0].amount.currency, t1.amount.currency);
+        expect(afterTxs[0].date, t1.date);
+        expect(afterTxs[0], isA<Contribution>());
+        expect(afterTxs[0].note, t1.note);
+
+        expect(afterTxs[1].id, t2.id);
+        expect(afterTxs[1].amount, t2.amount);
+        expect(afterTxs[1].amount.currency, t2.amount.currency);
+        expect(afterTxs[1].date, t2.date);
+        expect(afterTxs[1], isA<Withdrawal>());
+        expect(afterTxs[1].note, t2.note);
+      },
+    );
+
+    test(
+      'REQUIRED RECALCULATION TEST: recalculates FundState and Trajectory properly',
+      () async {
+        final target = Money(minorUnits: 100000, currency: Currency('USD'));
+        final start = CalendarDate(2026, 1, 1);
+        await createFundUseCase.execute(
+          id: 'fund-recalc',
+          name: 'Original',
+          targetAmount: target,
+          startDate: start,
+          targetDate: CalendarDate(2026, 12, 31),
+          contributionFrequency: ContributionFrequency.monthly,
+        );
+
+        final t1 = Contribution(
+          id: 't1',
+          amount: Money(minorUnits: 50000, currency: Currency('USD')),
+          date: CalendarDate(2026, 6, 1),
+        );
+        await repository.saveTransaction('fund-recalc', t1);
+
+        final stateBefore = await getFundUseCase.execute(
+          'fund-recalc',
+          CalendarDate(2026, 6, 15),
+        );
+        expect(stateBefore.calculationResult.status, FundStatus.onTrack);
+        expect(
+          stateBefore.calculationResult.requiredContribution.minorUnits,
+          8333,
+        );
+
+        await updateFundUseCase.execute(
+          id: 'fund-recalc',
+          targetAmount: Money(minorUnits: 50000, currency: Currency('USD')),
+        );
+
+        final stateAfter = await getFundUseCase.execute(
+          'fund-recalc',
+          CalendarDate(2026, 6, 15),
+        );
+        expect(stateAfter.calculationResult.status, FundStatus.complete);
+        expect(stateAfter.calculationResult.requiredContribution.minorUnits, 0);
+      },
+    );
+
+    test('throws InvalidFundDataError if currency is changed', () async {
+      await createFundUseCase.execute(
+        id: 'fund-curr',
+        name: 'Currency',
+        targetAmount: Money(minorUnits: 100000, currency: Currency('USD')),
+        startDate: CalendarDate(2026, 1, 1),
+        targetDate: CalendarDate(2026, 12, 31),
+        contributionFrequency: ContributionFrequency.monthly,
+      );
+
+      expect(
+        () => updateFundUseCase.execute(
+          id: 'fund-curr',
+          targetAmount: Money(minorUnits: 100000, currency: Currency('EUR')),
+        ),
+        throwsA(isA<InvalidFundDataError>()),
+      );
+    });
+
+    test('throws InvalidFundDataError if invalid target date', () async {
+      await createFundUseCase.execute(
+        id: 'fund-date',
+        name: 'Date',
+        targetAmount: Money(minorUnits: 100000, currency: Currency('USD')),
+        startDate: CalendarDate(2026, 6, 1),
+        targetDate: CalendarDate(2026, 12, 31),
+        contributionFrequency: ContributionFrequency.monthly,
+      );
+
+      expect(
+        () => updateFundUseCase.execute(
+          id: 'fund-date',
+          targetDate: CalendarDate(2026, 5, 1), // Before start date
+        ),
+        throwsA(isA<InvalidFundDataError>()),
+      );
     });
   });
 }

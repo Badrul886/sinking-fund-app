@@ -10,6 +10,7 @@ import '../../application/use_cases/fund/create_fund_use_case.dart';
 import '../../application/use_cases/fund/get_fund_use_case.dart';
 import '../../application/use_cases/fund/get_fund_detail_use_case.dart';
 import '../../application/use_cases/fund/get_all_funds_use_case.dart';
+import '../../application/use_cases/fund/update_fund_use_case.dart';
 import '../../application/use_cases/transaction/add_contribution_use_case.dart';
 import '../../application/use_cases/transaction/add_withdrawal_use_case.dart';
 import '../../data/repositories/settings_repository_impl.dart';
@@ -66,6 +67,10 @@ final getFundDetailUseCaseProvider = Provider<GetFundDetailUseCase>((ref) {
 
 final getAllFundsUseCaseProvider = Provider<GetAllFundsUseCase>((ref) {
   return GetAllFundsUseCase(ref.watch(fundRepositoryProvider));
+});
+
+final updateFundUseCaseProvider = Provider<UpdateFundUseCase>((ref) {
+  return UpdateFundUseCase(ref.watch(fundRepositoryProvider));
 });
 
 final addContributionUseCaseProvider = Provider<AddContributionUseCase>((ref) {
